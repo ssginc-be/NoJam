@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.crawl.mapper.CrawlerMapper">
+
+    <!-- 상품 등록 -->
+    <insert id="insertItemList"
+            parameterType="java.util.List"
+            keyProperty="itemId" useGeneratedKeys="true">
+        INSERT INTO item(name, category1, category2, price, last_modified_at)
+        VALUES
+            <foreach collection="list" item="item" separator=",">
+                (#{item.name}, #{item.category1}, #{item.category2}, ${item.price}, #{item.lastModifiedAt})
+            </foreach>
+    </insert>
+
+</mapper>
