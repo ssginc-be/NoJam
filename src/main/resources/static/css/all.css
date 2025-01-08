@@ -4110,6 +4110,12 @@ readers do not read off random characters that represent icons */
 .fa-truck-pickup:before {
     content: "\f63c"; }
 
+.fa-truck-fast:before {
+    content: "\f48b"; }
+
+.fa-gears:before {
+    content: "\f085"; }
+
 .fa-tshirt:before {
     content: "\f553"; }
 
