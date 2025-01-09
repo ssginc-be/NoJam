@@ -22,15 +22,4 @@ public class ItemVO {
     private String category2;
     private int price;
     private LocalDateTime lastModifiedAt;
-
-    @Override
-    public String toString() {
-        return "ItemVO{" +
-                "name='" + name + '\'' +
-                ", category1='" + category1 + '\'' +
-                ", category2='" + category2 + '\'' +
-                ", price=" + price +
-                ", lastModifiedAt=" + lastModifiedAt +
-                '}';
-    }
 }
