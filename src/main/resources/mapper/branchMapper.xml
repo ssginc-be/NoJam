@@ -14,4 +14,13 @@
             </foreach>
     </insert>
 
+    <!-- 지점 id 조회(COUNT) -->
+    <select id="countBranchId"
+            parameterType="string"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM branch
+        WHERE branch_id = #{branchId}
+    </select>
+
 </mapper>
