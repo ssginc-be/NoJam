@@ -1,4 +1,4 @@
-package com.ssginc.nojam.crawl.vo;
+package com.ssginc.nojam.stock.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,11 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemVO {
+public class HeadStockVO {
+    private String stockId;
     private Long itemId;
-    private String name;
-    private String category1;
-    private String category2;
-    private int price;
+    private Integer stock;
     private LocalDateTime lastModifiedAt;
 }

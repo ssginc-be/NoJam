@@ -13,4 +13,5 @@ import java.util.List;
 public interface BranchMapper {
 
     int insertBranchList(List<BranchVO> branchList);
+    int countBranchId(String branchId);
 }
