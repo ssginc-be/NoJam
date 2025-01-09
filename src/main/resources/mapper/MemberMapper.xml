@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.member.mapper.MemberMapper">
+    <!--  MemberMapper.java와 연결이 됨.  -->
+
+    <!-- 회원가입 -->
+    <insert id="insertMember"
+            parameterType="com.ssginc.nojam.member.vo.MemberVO">
+        INSERT INTO member (user_id, user_pw, user_name, user_email, user_role, last_modified_at, branch_id)
+        VALUES (#{userId}, #{userPw}, #{userName}, #{userEmail}, 'GUEST', NOW(), NULL)
+    </insert>
+
+    <!-- 회원 정보 찾기(ID중복 체크) -->
+    <select id="selectMemberById"
+            parameterType="string"
+            resultType="com.ssginc.nojam.member.vo.MemberVO">
+        SELECT * FROM member
+        WHERE user_id = #{userId}
+
+
+    </select>
+
+
+</mapper>
