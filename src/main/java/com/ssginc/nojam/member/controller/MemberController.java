@@ -18,7 +18,6 @@ public class MemberController {
     private final MemberService memberService;
 
 
-
     // localhost:8080/member/register
     // 회원가입 화면 띄우기
     @GetMapping("signup")
@@ -30,9 +29,8 @@ public class MemberController {
     // 회원가입
     @PostMapping("signup2")
     public String signUp2(MemberVO memberVO, Model model) {
-        String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
-
         // 이메일 형식 검증
+        String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
         if (!memberVO.getUserEmail().matches(emailPattern)) {
             model.addAttribute("error", "올바른 이메일 형식을 입력해주세요!");
             return "/member/signup"; // 다시 회원가입 페이지로
@@ -48,24 +46,63 @@ public class MemberController {
     // ID 중복 체크
     @GetMapping("checkId")
     @ResponseBody  // 뷰인 template으로 가지 않고 단순한 데이터나 json으로 보냄.
-    public boolean checkId(@RequestParam String userId) {  // ID 중복 체크
+    public boolean checkId(@RequestParam String userId) {
         boolean result = memberService.checkId(userId);
         return result;
     }
 
 
-    @GetMapping("login")
-    public String login(HttpSession session) {
+    @PostMapping("login")
+    public String login(MemberVO memberVO, HttpSession session, Model model) {
         System.out.println("========================================");
+        System.out.println("memberVO >>>>>>>>>>>>>>>>>>> " + memberVO);
         System.out.println("GET request to login received...");
 
-//        session.setAttribute("role", "head office");
-//        session.setAttribute("role", "branch manager");
-        session.setAttribute("role", "branch worker");
+        // 로그인 서비스 호출
+        boolean loginSuccess = memberService.login(memberVO);
 
-        System.out.println("세션값 설정 확인 >> " + session.getAttribute("role"));
+        if (loginSuccess) {
+            // DB에서 사용자 정보 조회
+            MemberVO dbMember = memberService.getMemberById(memberVO.getUserId());
 
-        return "redirect:/home/";
+            // 세션 설정
+            session.setAttribute("userId", dbMember.getUserId());
+            session.setAttribute("userName", dbMember.getUserName());
+            session.setAttribute("userRole", dbMember.getUserRole());
+            session.setAttribute("branchId", dbMember.getBranchId());
+
+            System.out.println("로그인 성공 - 세션 정보:");
+            System.out.println("ID: " + session.getAttribute("userId"));
+            System.out.println("Name: " + session.getAttribute("userName"));
+            System.out.println("Role: " + session.getAttribute("userRole"));
+            System.out.println("Branch ID: " + session.getAttribute("branchId"));
+
+            // user_role에 따라 리다이렉트 경로 설정
+            String userRole = dbMember.getUserRole();
+            if ("GUEST".equals(userRole)) {
+                return "redirect:/home/";  // 수정 필요
+            } else if ("BWKR".equals(userRole)) {
+                return "redirect:/home/";  // 수정 필요
+            } else if ("BMNG".equals(userRole)) {
+                return "redirect:/home/";  // 수정 필요
+            } else if ("HEAD".equals(userRole)) {
+                return "redirect:/home/";  // 수정 필요
+            } else {
+                model.addAttribute("loginError", "Invalid Role");
+                return "index";
+            }
+        } else {
+            // 로그인 실패
+            model.addAttribute("loginError", "Invalid ID or Password");
+            System.out.println("로그인 실패 - ID: " + memberVO.getUserId());
+            return "index";
+        }
+
+////        session.setAttribute("role", "head office");
+////        session.setAttribute("role", "branch manager");
+//        session.setAttribute("userRole", "branch worker");
+//        System.out.println("세션값 설정 확인 >> " + session.getAttribute("userRole"));
+//        return "redirect:/home/";
     }
 
     @GetMapping("logout")
@@ -73,7 +110,7 @@ public class MemberController {
         System.out.println("========================================");
         System.out.println("GET request to logout received...");
 
-        session.removeAttribute("role");
+        session.removeAttribute("userRole");
 
         return "redirect:/";
     }
