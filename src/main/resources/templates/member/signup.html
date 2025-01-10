@@ -41,7 +41,15 @@
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                         </div>
+
+                        <!-- error 메시지 표시 -->
+                        <div th:if="${error}" class="text-center text-danger mb-3">
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <!-- signup form -->
                         <form action="/member/signup2" method="POST" id="signUpForm" class="user">
+                            <!-- ID 중복체크 부분 -->
                             <div class="form-group row">
                                 <!-- 6칸: 입력 필드 -->
                                 <div class="col-sm-6">
@@ -59,6 +67,8 @@
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- Password, repeat password -->
                             <div class="form-group row">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <input type="password" class="form-control form-control-user"
@@ -69,16 +79,33 @@
                                            id="repeatPassword" placeholder="Repeat Password">
                                 </div>
                             </div>
+
+                            <!-- Name -->
                             <div class="form-group">
                                 <input type="text" class="form-control form-control-user" id="inputName"
-                                       name="userName"
-                                       placeholder="Name">
+                                       name="userName" placeholder="Name">
                             </div>
+
+                            <!-- Email & 인증 버튼 -->
+                            <div class="form-group row">
+                                <div class="col-sm-8 mb-3 mb-sm-0">
+                                    <input type="email" class="form-control form-control-user" id="inputEmail"
+                                           name="userEmail" placeholder="Email Address">
+                                </div>
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-info btn-user btn-block" id="sendEmailBtn">
+                                        인증 메일 발송
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 인증코드 입력 -->
                             <div class="form-group">
-                                <input type="email" class="form-control form-control-user" id="inputEmail"
-                                       name="userEmail"
-                                       placeholder="Email Address">
+                                <input type="text" class="form-control form-control-user" id="emailAuthCodeInput"
+                                       name="emailAuthCodeInput" placeholder="이메일로 전송된 인증코드 입력">
                             </div>
+
+                            <!-- Register Account 버튼 -->
                             <button type="button" id="submitBtn" class="btn btn-primary btn-user btn-block">
                                 Register Account
                             </button>
@@ -95,16 +122,15 @@
 
 </div>
 
+<!-- JS -->
+
 <!-- Bootstrap core JavaScript-->
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
-
 <!-- Core plugin JavaScript-->
 <script src="/js/jquery.easing.min.js"></script>
-
 <!-- Custom scripts for all pages-->
 <script src="/js/sb-admin-2.min.js"></script>
-
 <!-- axios 비동기 통신용 -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -121,29 +147,16 @@
                 alert("아이디를 입력해주세요.");
                 return;  // 함수 호출시 더이상 진행하고 싶지 않을 때: return하면 종료
             }
-            // id가 5글자 이상인지 체크
             if (id.length < 4) {
                 alert("아이디는 최소 4글자 이상이어야 합니다. 다시 입력해주세요.");
                 return;
             }
-            // id를 서버로 보내면서 중복체크해달라고 요청하고
-            //   화면이 넘어가지 않고, 원할 때(버튼 클릭) 순서랑 상관없이 서버와 통신하는 기술 필요:
-            //   비동기통신(자바스크립트 기술: ajax, 에이작스)
-            //   ==> XMLHttpRequest 객체, fetch(), axios 객체
-            //       브라우저에 없으므로 layout.html에 cdn으로 연결
-            //   ajax의 결과는 일반적으로 데이터만 받아온다. (int, boolean, string, float, list, map, ...)
-            //   axios.get(요청 주소).then(응답받고 나서 처리할 내용);
 
             // 서버로 중복 체크 요청
             axios
                 .get("/member/checkId?userId=" + id)
                 .then(function (response) {
-                    // axios.get(주소) : http 프로토콜을 만들어서 http 요청을 함.
-                    // 응답이 오면 then이 실행됨.
-                    // 익명함수안에 변수이름 하나를 넣어두면 거기에 응답객체를 넣어줌.
-                    // alert(response.data);   // http의 body를 꺼내줌.  // MemberController의 checkId 메서드 return 값
-                    // alert(response.status); // http의 응답코드를 꺼내줌.
-                    const result = response.data;  // http body 추출
+                    const result = response.data; // http body 추출
                     const idCheckResult = document.getElementById("idCheckResult");
                     if (result) {
                         // span 태그 사이에 넣어야함.
@@ -164,11 +177,42 @@
             // (사용 가능한 아이디, 불가능한 아이디인지 출력)
         });
 
-        // ID 입력 필드 변경 시 idCheckPass 초기화
+        // ID 입력 필드 변경 시 중복체크 상태 초기화
         document.getElementById("inputId").addEventListener("input", function () {
             idCheckPass = false; // ID가 변경되면 중복 체크 상태 초기화
             const idCheckResult = document.getElementById("idCheckResult");
             idCheckResult.textContent = ""; // 결과 메시지도 초기화
+        });
+
+        // [이메일 인증코드 발송] --------------------
+        document.getElementById("sendEmailBtn").addEventListener("click", function () {
+            const email = document.getElementById("inputEmail").value.trim();
+            if (!email) {
+                alert("이메일을 입력해주세요.");
+                return;
+            }
+            // 이메일 형식 확인
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("올바른 이메일 형식을 입력해주세요!");
+                return;
+            }
+
+            // 서버에 이메일 인증코드 발송 요청
+            axios.post("/member/sendCode", null, {
+                params: { userEmail: email }
+            })
+                .then(function (response) {
+                    if (response.data === "success") {
+                        alert("인증코드가 이메일로 발송되었습니다. 메일함을 확인해주세요.");
+                    } else {
+                        alert("이메일 발송 실패. 다시 시도해주세요.");
+                    }
+                })
+                .catch(function (error) {
+                    alert("이메일 발송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                    console.log(error);
+                });
         });
 
         // 폼 제출 버튼 클릭 이벤트
@@ -178,6 +222,7 @@
             const repeatPassword = document.getElementById("repeatPassword").value.trim();
             const inputName = document.getElementById("inputName").value.trim();
             const inputEmail = document.getElementById("inputEmail").value.trim();
+            const emailAuthCodeInput = document.getElementById("emailAuthCodeInput").value.trim();
             console.log(inputId + " " + inputPassword + " " + inputName + " " + inputEmail);
 
             // 유효성 검사
@@ -188,22 +233,22 @@
                 alert("올바른 이메일 형식을 입력해주세요!");
                 return;
             }
-            // id 중복체크 여부
-            if (idCheckPass != true) {
+            // 1) ID 중복체크 여부
+            if (!idCheckPass) {
                 alert("아이디 중복 체크를 완료해주세요.");
                 return;
             }
-            // 전체 입력은 다 한것인지 체크
-            if (!inputId || !inputPassword || !inputName || !inputEmail) {
+            // 2) 필수값 검사
+            if (!inputId || !inputPassword || !inputName || !inputEmail || !emailAuthCodeInput) {
                 alert("모든 입력값을 정확히 채워주세요.");
                 return;
             }
-            // pw == pw2 체크
+            // 3) 비밀번호 동일성 검사
             if (inputPassword !== repeatPassword) {
                 alert("입력한 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
                 return;
             }
-            // pw가 4글자 이상인지 체크
+            // 비밀번호 최소 길이 예시
             if (inputPassword.length < 4) {
                 alert("비밀번호는 최소 4글자 이상이어야 합니다. 다시 입력해주세요.");
                 return;
@@ -212,7 +257,7 @@
             // 이 함수가 return으로 중단되지 않았으면 폼 전송해주세요
             // 자바스크립트로 유효성 검증 후 submit 하려면
             // form내의 button의 type을 type="button"으로 바꿔줌.
-            // 폼 제출
+            // 4) 폼 제출
             document.getElementById("signUpForm").submit();
             alert("회원가입이 완료되었습니다. 환영합니다!")
         });
