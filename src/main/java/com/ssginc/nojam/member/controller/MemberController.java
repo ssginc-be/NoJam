@@ -1,5 +1,6 @@
 package com.ssginc.nojam.member.controller;
 
+import com.ssginc.nojam.member.service.EmailService;
 import com.ssginc.nojam.member.service.MemberService;
 import com.ssginc.nojam.member.vo.MemberVO;
 import jakarta.servlet.http.HttpSession;
@@ -16,7 +17,26 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final EmailService emailService;
 
+    // 이메일 인증코드 발송
+    @PostMapping("sendCode")
+    @ResponseBody
+    public String sendEmailVerificationCode(@RequestParam String userEmail, HttpSession session) {
+        // 1. 인증 코드 생성
+        String authCode = emailService.createAuthCode();
+        // 2. 인증 코드 메일로 보내기
+        try {
+            emailService.sendVerificationMail(userEmail, authCode);
+        } catch (Exception e) {
+            log.error("이메일 발송 실패:", e);
+            return "fail";
+        }
+        // 3. 세션에 인증코드 저장
+        session.setAttribute("emailAuthCode", authCode);
+        // AJAX 통신에서 사용자가 확인할 문자열 리턴 (JSON으로 해도 무관)
+        return "success";
+    }
 
     // localhost:8080/member/register
     // 회원가입 화면 띄우기
@@ -28,18 +48,36 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("signup2")
-    public String signUp2(MemberVO memberVO, Model model) {
+    public String signUp2(MemberVO memberVO,
+                          @RequestParam("emailAuthCodeInput") String emailAuthCodeInput,
+                          Model model,
+                          HttpSession session) {
+        // 1) 세션에 저장된 인증코드를 가져온다
+        String emailAuthCode = (String) session.getAttribute("emailAuthCode");
+
+        // 2) 인증코드 검증
+        if (emailAuthCode == null || !emailAuthCode.equals(emailAuthCodeInput)) {
+            // 인증 실패
+            model.addAttribute("error", "이메일 인증에 실패했습니다. 인증 코드를 다시 확인해주세요!");
+            return "/member/signup";
+        }
+
         // 이메일 형식 검증
         String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
         if (!memberVO.getUserEmail().matches(emailPattern)) {
             model.addAttribute("error", "올바른 이메일 형식을 입력해주세요!");
-            return "/member/signup"; // 다시 회원가입 페이지로
+            return "/member/signup";
         }
 
+        // 3) (인증 성공) 비밀번호 암호화 & DB에 회원 정보 저장
         memberService.signUpPwEncoder(memberVO);
         System.out.println("========================================");
         System.out.println("GET request to register received...");
         System.out.println(memberVO);
+
+        // 4) 세션에서 인증코드 제거(보안상)
+        session.removeAttribute("emailAuthCode");
+
         return "redirect:/";
     }
 
@@ -98,11 +136,6 @@ public class MemberController {
             return "index";
         }
 
-////        session.setAttribute("role", "head office");
-////        session.setAttribute("role", "branch manager");
-//        session.setAttribute("userRole", "branch worker");
-//        System.out.println("세션값 설정 확인 >> " + session.getAttribute("userRole"));
-//        return "redirect:/home/";
     }
 
     @GetMapping("logout")
