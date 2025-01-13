@@ -38,15 +38,46 @@ public class MemberController {
         return "success";
     }
 
-    // localhost:8080/member/register
-    // 회원가입 화면 띄우기
-    @GetMapping("signup")
+    // 이메일 인증코드 검증
+    @PostMapping("verifyCode")
+    @ResponseBody
+    public String verifyEmailCode(@RequestParam String userEmail,
+                                  @RequestParam String authCode,
+                                  HttpSession session) {
+        // 1. 세션에서 인증코드 가져오기
+        String sessionAuthCode = (String) session.getAttribute("emailAuthCode");
+
+        // 2. 인증코드 검증
+        if (sessionAuthCode != null && sessionAuthCode.equals(authCode)) {
+            // 인증 성공
+            return "verified";
+        } else {
+            // 인증 실패
+            return "invalid";
+        }
+    }
+
+    // 회원가입 화면
+    @GetMapping("/signup")
     public String signUp() {
         log.info("singup 요청됨.");
         return "/member/signup";
     }
 
-    // 회원가입
+    // bootstrap 사용할 때 코드
+    @GetMapping("signup0")
+    public String signUp0() {
+        log.info("singup 요청됨.");
+        return "signup0";
+    }
+    // bootstrap 사용할 때 코드
+    @GetMapping("index0")
+    public String login0() {
+        log.info("login 요청됨.");
+        return "index0";
+    }
+
+    // 회원가입 기능
     @PostMapping("signup2")
     public String signUp2(MemberVO memberVO,
                           @RequestParam("emailAuthCodeInput") String emailAuthCodeInput,
@@ -59,14 +90,14 @@ public class MemberController {
         if (emailAuthCode == null || !emailAuthCode.equals(emailAuthCodeInput)) {
             // 인증 실패
             model.addAttribute("error", "이메일 인증에 실패했습니다. 인증 코드를 다시 확인해주세요!");
-            return "/member/signup";
+            return "signup";
         }
 
         // 이메일 형식 검증
         String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
         if (!memberVO.getUserEmail().matches(emailPattern)) {
             model.addAttribute("error", "올바른 이메일 형식을 입력해주세요!");
-            return "/member/signup";
+            return "signup";
         }
 
         // 3) (인증 성공) 비밀번호 암호화 & DB에 회원 정보 저장
@@ -143,7 +174,10 @@ public class MemberController {
         System.out.println("========================================");
         System.out.println("GET request to logout received...");
 
+        session.removeAttribute("userId");
+        session.removeAttribute("userName");
         session.removeAttribute("userRole");
+        session.removeAttribute("branchId");
 
         return "redirect:/";
     }
