@@ -31,4 +31,43 @@
         </foreach>
     </insert>
 
+    <!-- 본사 재고 50개 paging 조회 -->
+    <select id="get50HeadStock"
+            resultType="com.ssginc.nojam.stock.dto.HeadStockViewDTO"
+            parameterType="int">
+        SELECT * FROM (
+            SELECT hs.stock_id, hs.item_id, it.name, it.category1, it.category2, it.price, hs.stock, hs.last_modified_at FROM head_stock hs
+            JOIN item it USING(item_id)
+        ) res
+        ORDER BY stock_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+    <!-- 본사 재고 개수 조회 -->
+    <select id="countAllHeadStock"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM head_stock
+    </select>
+
+    <!-- 본사 재고 필터링 후 개수 조회 -->
+    <select id="countFilteredHeadStock"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM head_stock
+        JOIN item USING(item_id)
+        WHERE ${category} LIKE '%${value}%'
+    </select>
+
+    <!-- 본사 재고 필터링 후 조회 -->
+    <select id="get50FilteredHeadStock"
+            resultType="com.ssginc.nojam.stock.dto.HeadStockViewDTO">
+        SELECT *
+        FROM head_stock
+        JOIN item USING(item_id)
+        WHERE ${category} LIKE '%${value}%'
+        ORDER BY stock_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
 </mapper>
