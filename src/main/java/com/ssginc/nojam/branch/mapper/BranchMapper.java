@@ -14,4 +14,5 @@ public interface BranchMapper {
 
     int insertBranchList(List<BranchVO> branchList);
     int countBranchId(String branchId);
+    BranchVO selectBranchName(String branchId);
 }
