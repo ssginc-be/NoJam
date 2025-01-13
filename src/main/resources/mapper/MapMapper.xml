@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.system.mapper.MapMapper">
+
+    <select id="getAllBranches" resultType="com.ssginc.nojam.system.vo.MapVO">
+        SELECT
+            branch_id,
+            branch_name,
+            branch_address,
+            branch_latitude,
+            branch_longitude,
+            post_address,
+            last_modified_at
+        FROM branch
+    </select>
+
+</mapper>
