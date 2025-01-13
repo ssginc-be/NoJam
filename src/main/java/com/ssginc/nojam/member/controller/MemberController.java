@@ -1,8 +1,10 @@
 package com.ssginc.nojam.member.controller;
 
+import com.ssginc.nojam.branch.service.BranchService;
 import com.ssginc.nojam.member.service.EmailService;
 import com.ssginc.nojam.member.service.MemberService;
 import com.ssginc.nojam.member.vo.MemberVO;
+import com.ssginc.nojam.branch.vo.BranchVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final EmailService emailService;
+    private final BranchService branchService;
 
     // 이메일 인증코드 발송
     @PostMapping("sendCode")
@@ -134,17 +137,39 @@ public class MemberController {
             // DB에서 사용자 정보 조회
             MemberVO dbMember = memberService.getMemberById(memberVO.getUserId());
 
+            if (dbMember == null) {
+                model.addAttribute("loginError", "사용자 정보를 불러올 수 없습니다.");
+                return "index";
+            }
+
+            // 지점 ID로 지점 정보 조회
+            String branchId = dbMember.getBranchId();
+            String branchName = null;
+
+            if (branchId != null) {
+                BranchVO branch = branchService.selectBranchName(branchId);
+                if (branch != null) {
+                    branchName = branch.getBranchName();
+                } else {
+                    log.warn("해당 branchId에 대한 지점 정보를 찾을 수 없습니다: " + branchId);
+                }
+            }
+
             // 세션 설정
             session.setAttribute("userId", dbMember.getUserId());
             session.setAttribute("userName", dbMember.getUserName());
             session.setAttribute("userRole", dbMember.getUserRole());
             session.setAttribute("branchId", dbMember.getBranchId());
+            if (branchName != null) {
+                session.setAttribute("branch_name", branchName);
+            }
 
             System.out.println("로그인 성공 - 세션 정보:");
             System.out.println("ID: " + session.getAttribute("userId"));
             System.out.println("Name: " + session.getAttribute("userName"));
             System.out.println("Role: " + session.getAttribute("userRole"));
             System.out.println("Branch ID: " + session.getAttribute("branchId"));
+            System.out.println("Branch Name: " + session.getAttribute("branchName"));
 
             // user_role에 따라 리다이렉트 경로 설정
             String userRole = dbMember.getUserRole();

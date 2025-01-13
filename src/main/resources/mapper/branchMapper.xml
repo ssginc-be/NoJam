@@ -23,4 +23,14 @@
         WHERE branch_id = #{branchId}
     </select>
 
+    <!-- 지점 name 조회(session) -->
+    <select id="selectBranchName"
+            parameterType="string"
+            resultType="com.ssginc.nojam.branch.vo.BranchVO">
+        SELECT *
+        FROM branch
+        WHERE branch_id = #{branchId}
+    </select>
+
+
 </mapper>
