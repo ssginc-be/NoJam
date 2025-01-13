@@ -1,5 +1,4 @@
-// const axios = require('axios');
-let myCt = document.getElementById('myBarChart');
+let barCt = document.getElementById('barChart');
 
 async function getCategoryLabels() {
     try {
@@ -14,12 +13,12 @@ async function getCategoryLabels() {
         }
 
         // 가져온 카테고리 목록으로 x축의 레이블 설정
-        myChart.data.labels = categories.data;
+        barChart.data.labels = categories.data;
         // 가져온 카테고리별 판매량으로 데이터 설정
-        myChart.data.datasets[0].data = initSales.data;
+        barChart.data.datasets[0].data = initSales.data;
 
         // 설정된 값들로 chart update
-        myChart.update();
+        barChart.update();
     } catch (error) {
         console.log(error);
     }
@@ -34,16 +33,16 @@ function changeSelect() {
     // 선택된 항목으로 chart update
     axios.get("/chart/salesByCategory?branchId=" + selectValue)
         .then((response) => {
-            myChart.data.datasets[0].data = response.data;
+            barChart.data.datasets[0].data = response.data;
 
-            myChart.update();
+            barChart.update();
         })
         .catch((error) => {
             console.log(error);
         })
 }
 
-let myChart = new Chart(myCt, {
+let barChart = new Chart(barCt, {
     type: 'bar',
     data: {
         labels: [],

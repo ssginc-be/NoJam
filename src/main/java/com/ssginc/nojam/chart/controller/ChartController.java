@@ -69,7 +69,6 @@ public class ChartController {
         System.out.println("==============================================");
         System.out.println("branch id >>>> \"" + branchId + "\"");
 
-
         List<Integer> salesByCategoryData = chartService.getSalesByCategory(branchId);
 
         System.out.println("==============================================");
@@ -77,6 +76,23 @@ public class ChartController {
         System.out.println("==============================================");
 
         return salesByCategoryData;
+    }
+
+    @GetMapping("incomingByCategory")
+    @ResponseBody
+    public List<Integer> getIncomingByCategory(@RequestParam String branchId) {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Incoming Quantity By Category received...");
+        System.out.println("==============================================");
+        System.out.println("branch id >>>> \"" + branchId + "\"");
+
+        List<Integer> incomingByCategoryData = chartService.getIncomingByCategory(branchId);
+
+        System.out.println("==============================================");
+        System.out.println(incomingByCategoryData);
+        System.out.println("==============================================");
+
+        return incomingByCategoryData;
     }
 
 }
