@@ -14,4 +14,6 @@ public interface ChartMapper {
 
     List<Integer> getSalesByCategory(String branchId);
 
+    List<Integer> getIncomingByCategory(String branchId);
+
 }

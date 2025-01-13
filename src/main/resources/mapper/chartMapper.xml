@@ -28,7 +28,20 @@
             </if>
         </where>
         GROUP BY i.category2
-        ORDER BY i.category2;
+        ORDER BY i.category2
+    </select>
+
+    <select id="getIncomingByCategory"
+            resultType="java.lang.Integer">
+        SELECT SUM(ic.quantity) FROM incoming ic
+        JOIN item i ON ic.item_id = i.item_id
+        <where>
+            <if test='branchId != ""'>
+                AND branch_id = #{branchId}
+            </if>
+        </where>
+        GROUP BY i.category2
+        ORDER BY i.category2
     </select>
 
 </mapper>

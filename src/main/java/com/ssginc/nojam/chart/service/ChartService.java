@@ -25,4 +25,8 @@ public class ChartService {
         return chartMapper.getSalesByCategory(branchId);
     }
 
+    public List<Integer> getIncomingByCategory(String branchId) {
+        return chartMapper.getIncomingByCategory(branchId);
+    }
+
 }
