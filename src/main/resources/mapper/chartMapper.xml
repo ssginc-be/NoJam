@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.chart.mapper.ChartMapper">
+
+    <select id="getBranches"
+            resultType="com.ssginc.nojam.chart.vo.GetBranchIdAndNameDto">
+        SELECT branch_id AS branchId, branch_name AS branchName
+        FROM branch
+        LIMIT 5;
+    </select>
+
+    <select id="getCategoryLabels"
+            resultType="string">
+        SELECT category2 FROM item
+        GROUP BY category2
+        ORDER BY category2
+    </select>
+
+    <select id="getSalesByCategory"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity) FROM sales s
+        JOIN item i ON s.item_id = i.item_id
+        <where>
+            <if test='branchId != ""'>
+                AND branch_id = #{branchId}
+            </if>
+        </where>
+        GROUP BY i.category2
+        ORDER BY i.category2;
+    </select>
+
+</mapper>
