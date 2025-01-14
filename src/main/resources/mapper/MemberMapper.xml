@@ -18,8 +18,19 @@
             resultType="com.ssginc.nojam.member.vo.MemberVO">
         SELECT * FROM member
         WHERE user_id = #{userId}
+    </select>
 
+    <!-- 비밀번호 찾기 및 수정 -->
+    <update id="updatePasswordByEmail" parameterType="map">
+        UPDATE member
+        SET user_pw = #{userPw}, last_modified_at = NOW()
+        WHERE user_email = #{userEmail}
+    </update>
 
+    <!-- 이메일로 회원 조회 -->
+    <select id="selectMemberByEmail" parameterType="string" resultType="com.ssginc.nojam.member.vo.MemberVO">
+        SELECT * FROM member
+        WHERE user_email = #{userEmail}
     </select>
 
 
