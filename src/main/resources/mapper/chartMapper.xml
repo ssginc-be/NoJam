@@ -69,4 +69,41 @@
         ON CTE.date = temp
     </select>
 
+    <select id="getSalesAmountByDate"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity * price) AS totalSalesAmount
+        FROM sales s
+        JOIN item i
+        ON s.item_id = i.item_id
+        WHERE DATE_FORMAT(s.sales_date, "%Y-%m-%d") = #{date}
+        <if test='branchId != ""'>
+            AND branch_id = #{branchId}
+        </if>
+    </select>
+
+    <select id="getSalesAmountByMonth"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity * price) AS totalSalesAmount
+        FROM sales s
+        JOIN item i
+        ON s.item_id = i.item_id
+        WHERE DATE_FORMAT(s.sales_date, "%Y-%m") = #{date}
+        <if test='branchId != ""'>
+            AND branch_id = #{branchId}
+        </if>
+    </select>
+
+    <select id="getSalesAmountByYear"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity * price) AS totalSalesAmount
+        FROM sales s
+        JOIN item i
+        ON s.item_id = i.item_id
+        WHERE DATE_FORMAT(s.sales_date, "%Y") = #{date}
+        <if test='branchId != ""'>
+            AND branch_id = #{branchId}
+        </if>
+    </select>
+
+
 </mapper>

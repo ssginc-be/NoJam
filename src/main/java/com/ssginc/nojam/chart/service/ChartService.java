@@ -44,7 +44,18 @@ public class ChartService {
         System.out.println("Service End Date = " + endDate);
 
         return chartMapper.getSalesByDayOfWeek(startDate, endDate, branchId);
-//        return null;
+    }
+
+    public int getSalesAmountByDate(String branchId, String date) {
+        return chartMapper.getSalesAmountByDate(branchId, date);
+    }
+
+    public int getSalesAmountByMonth(String branchId, String date) {
+        return chartMapper.getSalesAmountByMonth(branchId, date);
+    }
+
+    public int getSalesAmountByYear(String branchId, String date) {
+        return chartMapper.getSalesAmountByYear(branchId, date);
     }
 
 }

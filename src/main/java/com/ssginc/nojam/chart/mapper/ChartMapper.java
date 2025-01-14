@@ -20,4 +20,10 @@ public interface ChartMapper {
 
     List<GetSalesAndDateDto> getSalesByDayOfWeek(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("branchId") String branchId);
 
+    int getSalesAmountByDate(String branchId, String date);
+
+    int getSalesAmountByMonth(String branchId, String date);
+
+    int getSalesAmountByYear(String branchId, String date);
+
 }
