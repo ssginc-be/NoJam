@@ -105,5 +105,12 @@
         </if>
     </select>
 
+    <select id="getStatusCount"
+            resultType="com.ssginc.nojam.chart.vo.GetStatusAndCountDto">
+        SELECT status, COUNT(*) AS count
+        FROM outgoing
+        GROUP BY status;
+    </select>
+
 
 </mapper>

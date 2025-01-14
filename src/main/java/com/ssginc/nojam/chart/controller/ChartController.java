@@ -3,6 +3,8 @@ package com.ssginc.nojam.chart.controller;
 import com.ssginc.nojam.chart.service.ChartService;
 import com.ssginc.nojam.chart.vo.GetBranchIdAndNameDto;
 import com.ssginc.nojam.chart.vo.GetSalesAndDateDto;
+import com.ssginc.nojam.chart.vo.GetStatusAndCountDto;
+import com.ssginc.nojam.chart.vo.GetStatusAndPercentageDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -175,4 +177,18 @@ public class ChartController {
         return salesAmountByYear;
     }
 
+    @GetMapping("/statusCount")
+    @ResponseBody
+    public List<GetStatusAndPercentageDto> getStatusCount() {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Sales Amount By Year received...");
+        System.out.println("==============================================");
+
+        List<GetStatusAndPercentageDto> statusAndPercentageDtos = chartService.getStatusCount();
+
+        System.out.println(statusAndPercentageDtos);
+        System.out.println("==============================================");
+
+        return statusAndPercentageDtos;
+    }
 }
