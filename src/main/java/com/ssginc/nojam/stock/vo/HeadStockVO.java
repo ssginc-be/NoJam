@@ -1,6 +1,5 @@
 package com.ssginc.nojam.stock.vo;
 
-import com.ssginc.nojam.crawl.vo.ItemVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
