@@ -12,15 +12,22 @@ body {
     color: #0D183F;
 }
 
+.content {
+    display: flex;
+    width: calc(100% - 14rem);
+    height: 100%;
+    margin-left: 14rem;
+}
+
 /* 컨테이너 */
 .container {
-    width: calc(100% - 250px); /* 좌측 레이아웃 너비가 250px이라고 가정 */
+    flex: 1;
     max-width: 800px;
-    margin: 50px 0 50px 200px; /* 좌측 레이아웃 너비만큼 왼쪽 마진 추가 */
-    padding: 20px;
+    padding: 20px 32px;
     background-color: #FFFFFF;
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(22, 22, 22, 0.1);
+    margin: 50px auto auto calc(14rem + 80px);
 }
 
 /* 헤더 */
@@ -35,6 +42,11 @@ body {
     font-size: 2rem;
     color: #0D183F;
     font-weight: bold;
+}
+
+.header a {
+    text-decoration: none;
+    margin: 0 0 auto auto;
 }
 
 .edit-button {

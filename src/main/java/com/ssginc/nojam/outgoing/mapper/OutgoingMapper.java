@@ -30,6 +30,7 @@ public interface OutgoingMapper {
     void decHeadStock(@Param("decValue") Integer decValue, @Param("itemId") Long itemId);
 
     // 출고 완료 처리
+    int countAllIndeliveryOutgoings();
     void markDone(
             @Param("orderId") Long orderId,
             @Param("incomingId") String incomingId,

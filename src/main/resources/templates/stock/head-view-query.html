@@ -9,6 +9,7 @@
     <title>재고 관리 - 재고 조회</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="/js/layout.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lufga:wght@400;600&family=SUIT:wght@400;600&display=swap');
 
@@ -23,7 +24,9 @@
             height: 100vh;
         }
         .sidebar {
-            width: 250px;
+            position: fixed;
+            width: 14rem;
+            height: 100%;
             background-color: #161616;
             color: #fff;
             display: flex;
@@ -37,51 +40,52 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 30px;
+            margin-top: 15px;
         }
         .logo img {
-            width: 40px;
-            height: 40px;
-        }
-        .logo span {
-            font-family: 'Lufga', Arial, sans-serif;
-            font-size: 24px;
-            font-weight: 600;
-        }
-        .logo .highlight {
-            color: #FFD028;
+            width: 120px;
+            height: auto;
         }
         .menu {
             flex-grow: 1;
+            margin-top: 32px;
         }
         .menu-item {
+            color: #fff;
             padding: 15px 20px;
             cursor: pointer;
             font-family: 'SUIT', Arial, sans-serif;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 18px;
             transition: background-color 0.3s ease;
             margin-bottom: 10px;
         }
         .menu-item:hover,
         .menu-item.active {
+            color: #FFD028;
             background-color: #3A3A3A;
-            border-radius: 5px;
+            border-radius: 8px;
         }
         .submenu {
-            margin-left: 15px;
+            margin-left: 18px;
             display: none;
         }
         .submenu-item {
             padding: 10px 20px;
             cursor: pointer;
             font-family: 'SUIT', Arial, sans-serif;
-            font-size: 14px;
+            font-size: 16px;
             transition: background-color 0.3s ease;
             margin-bottom: 8px;
         }
         .submenu-item:hover {
             background-color: #484848;
-            border-radius: 5px;
+            border-radius: 8px;
+        }
+        .submenu-item.active {
+            color: #FFD028;
+            background-color: #3A3A3A;
+            border-radius: 8px;
         }
         .menu-item.active + .submenu {
             display: block;
@@ -90,6 +94,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin: 0 8px;
             padding: 10px 15px;
             background-color: #222222;
             color: #fff;
@@ -104,12 +109,26 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 5px;
+        }
+        .user-info div {
+            margin-left: 5px;
         }
         .user-info img {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+        }
+        .user-id {
+            font-family: 'SUIT', Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        .user-role {
+            font-family: 'SUIT', Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #A09F9F;
         }
         .logout-icon {
             display: flex;
@@ -124,12 +143,13 @@
             background-color: #303030;
         }
         .logout-icon img {
-            width: 20px;
-            height: 20px;
+            width: 40px;
+            height: 40px;
         }
         .content {
             flex-grow: 1;
             background-color: #F5F6FA;
+            margin-left: 14rem; /* sidebar width */
         }
         .wrapper {
             display: flex;
@@ -138,6 +158,7 @@
             height: 100%;
             padding: 36px 32px 36px 32px;
         }
+
         .title-area {
             margin-bottom: 38px;
         }
@@ -189,7 +210,7 @@
         .category-dropdown .optionList {
             position: absolute;
             top: 190px;
-            left: 282px;
+            left: 257px;
             width: 296px;
             background: #FFFFFF;
             color: #161616;
@@ -275,7 +296,7 @@
         }
         table tbody {
             display: block;
-            max-height: 400px;
+            max-height: 55vh;
             overflow-y: scroll;
         }
         table thead, table tbody tr {
@@ -300,52 +321,73 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <div class="sidebar">
     <div>
-        <div class="logo">
-            <img src="/img/NobrandIcon.PNG" alt="Logo">
-            <span><span class="highlight">N</span>oJam</span>
+        <div class="logo" onclick="location.href='/chart/'" style="cursor:pointer;">
+            <img src="/img/nojam-logo.svg" alt="Logo">
         </div>
         <div class="menu">
-            <div class="menu-item active" onclick="toggleSubmenu(this, 'dashboard-submenu')">Dashboard</div>
+            <div class="menu-item active" onclick="location.href='/chart/'" style="cursor:pointer;">Dashboard</div>
+
             <div class="menu-item" onclick="toggleSubmenu(this, 'inventory-submenu')">재고관리</div>
             <div class="submenu" id="inventory-submenu">
-                <div class="submenu-item">재고 전체 조회</div>
-                <div class="submenu-item">재고 필터링 조회</div>
-                <div class="submenu-item">재고 조정</div>
-                <div class="submenu-item">부족 재고 조회</div>
+                <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/stock/head/view/query/1?category=&value='">재고 조회</div>
+                <div th:if="${!#strings.equals(session.userRole, 'HEAD')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/stock/branch/view/query/1?category=&value='">재고 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">재고 조정</div>
             </div>
-            <div class="menu-item" onclick="toggleSubmenu(this, 'shipping-submenu')">출고관리</div>
+
+            <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'shipping-submenu')">출고관리</div>
             <div class="submenu" id="shipping-submenu">
-                <div class="submenu-item">출고 전체 조회</div>
-                <div class="submenu-item">출고 필터링 조회</div>
-                <div class="submenu-item">출고 등록</div>
-                <div class="submenu-item">출고 완료 처리</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/view/1'">출고 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/pending/1'">출고 승인/거절</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/indelivery/1'">출고 완료 처리</div>
             </div>
-            <div class="menu-item" onclick="toggleSubmenu(this, 'order-submenu')">발주관리</div>
+
+            <div th:if="${#strings.equals(session.userRole, 'BMNG')} or ${#strings.equals(session.userRole, 'BWKR')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'incoming-submenu')">입고관리</div>
+            <div class="submenu" id="incoming-submenu">
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">입고 전체 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">입고 필터링 조회</div>
+            </div>
+
+            <div th:if="${#strings.equals(session.userRole, 'BMNG')} or ${#strings.equals(session.userRole, 'BWKR')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'order-submenu')">발주관리</div>
             <div class="submenu" id="order-submenu">
-                <div class="submenu-item">발주 내역 조회</div>
-                <div class="submenu-item">발주 등록</div>
-                <div class="submenu-item">발주 취소</div>
+                <div class="submenu-item" onclick="activateSubmenu(this)">발주 내역 조회</div>
+                <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href=''">발주 등록</div>
+                <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/order/upload'">발주 내역서 등록</div>
+                <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href=''">발주 취소</div>
             </div>
-            <div class="menu-item" onclick="toggleSubmenu(this, 'system-submenu')">시스템</div>
+
+            <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'system-submenu')">지점 관리</div>
             <div class="submenu" id="system-submenu">
-                <div class="submenu-item">지점 정보 조회</div>
-                <div class="submenu-item">지점 정보 저장</div>
-                <div class="submenu-item">지점 회원 관리</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/map/'">지점 정보 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">지점 정보 저장</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">지점 회원 관리</div>
             </div>
-            <div class="menu-item" onclick="location.href='user-info.html'">사용이력관리</div>
+
+            <div class="menu-item" onclick="location.href='/member/mypage'">마이페이지</div>
         </div>
     </div>
     <div>
         <div class="user-info-button">
             <div class="user-info">
-                <img src="defaultUserIcon.png" alt="User">
+                <img th:if="${#strings.equals(session.userRole, 'HEAD')}" src="/img/user-profile.png" alt="User">
+                <img th:if="!${#strings.equals(session.userRole, 'HEAD')}" src="/img/user-profile-2.png" alt="User">
                 <div>
-                    <div>Queue-ri</div>
-                    <div>본사</div>
+                    <div class="user-id">[[${session.userName}]]</div>
+                    <div th:if="${#strings.equals(session.userRole, 'HEAD')}" class="user-role">본사</div>
+                    <div th:if="${#strings.equals(session.userRole, 'BMNG')}" class="user-role">지점장</div>
+                    <div th:if="${#strings.equals(session.userRole, 'BWKR')}" class="user-role">지점직원</div>
                 </div>
             </div>
             <div class="logout-icon" onclick="logout(event)">
-                <img src="logoutIcon.png" alt="Logout">
+                <img src="/img/logout-icon.svg" alt="Logout">
             </div>
         </div>
     </div>
@@ -433,24 +475,6 @@
 </div>
 
 <script>
-    function toggleSubmenu(element, submenuId) {
-        const submenus = document.querySelectorAll('.submenu');
-        submenus.forEach(submenu => submenu.style.display = 'none');
-
-        const menuItems = document.querySelectorAll('.menu-item');
-        menuItems.forEach(item => item.classList.remove('active'));
-
-        element.classList.add('active');
-        const submenu = document.getElementById(submenuId);
-        if (submenu) submenu.style.display = 'block';
-    }
-
-    function logout(event) {
-        event.stopPropagation();
-        alert('로그아웃 되었습니다.');
-        location.href = 'login.html';
-    }
-
     /* query selector 목록 */
     const dropdown = document.querySelector('.category-dropdown');
     const options = document.querySelectorAll('.optionItem');

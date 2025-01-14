@@ -9,16 +9,16 @@
 body {
     font-family: "SUIT", sans-serif;
     background-color: #F5F6FA;
+    display: flex;
 }
 
 /* 전체 래퍼 */
 .login-wrapper {
     width: 100%;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 32px;
     background-color: #FFFFFF;
     zoom: 0.8; /* 화면 전체를 80% 크기로 축소 */
 }
@@ -37,7 +37,7 @@ body {
     flex-direction: row;
     width: 100%;
     max-width: 1600px;
-    margin: 40px 0;
+    margin: auto auto;
     gap: 40px;
     flex-wrap: nowrap; /* 줄바꿈 방지 */
     align-items: stretch;
