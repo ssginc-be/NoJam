@@ -2,6 +2,7 @@ package com.ssginc.nojam.chart.controller;
 
 import com.ssginc.nojam.chart.service.ChartService;
 import com.ssginc.nojam.chart.vo.GetBranchIdAndNameDto;
+import com.ssginc.nojam.chart.vo.GetSalesAndDateDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -93,6 +94,24 @@ public class ChartController {
         System.out.println("==============================================");
 
         return incomingByCategoryData;
+    }
+
+    @GetMapping("salesByDayOfWeek")
+    @ResponseBody
+    public List<GetSalesAndDateDto> getSalesByDayOfWeek(@RequestParam String endDate, @RequestParam String branchId) {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Incoming Quantity By Category received...");
+        System.out.println("==============================================");
+        System.out.println("Selected End Date >>> \"" + endDate + "\"");
+        System.out.println("branch id >>>> \"" + branchId + "\"");
+
+        List<GetSalesAndDateDto> salesByDayOfWeek = chartService.getSalesByDayOfWeek(endDate, branchId);
+
+        System.out.println("==============================================");
+        System.out.println(salesByDayOfWeek);
+        System.out.println("==============================================");
+
+        return salesByDayOfWeek;
     }
 
 }

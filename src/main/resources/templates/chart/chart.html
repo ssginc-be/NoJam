@@ -3,6 +3,10 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
+<head>
+    <link rel="stylesheet" href="/css/calendar.css">
+</head>
+
 <body>
 <!-- Begin Page Content -->
 <!-- 화면 중앙 컨텐츠 부분 -->
@@ -67,6 +71,76 @@
     </div>
     
     <div class="row">
+        
+        <!-- Area Chart -->
+        <div class="col-xl-8 col-lg-8">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">일자별 판매량</h6>
+                    <div>
+                        <button class="btn btn-link" data-toggle="modal" data-target="#datePickerModal"
+                                style="text-decoration: none; color: inherit;">날짜 선택</button>
+                    </div>
+                    
+                    <div class="modal fade" id="datePickerModal" tabindex="-1" role="dialog" aria-labelledby="datePickerModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="datePickerModalLabel" onclick="renderCalendar()">날짜 선택</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="wrapper">
+                                        <header>
+                                            <div class="nav">
+                                                <button class="material-icons" id="prev"> < </button>
+                                                <p class="current-date"></p>
+                                                <button class="material-icons" id="next"> > </button>
+                                            </div>
+                                        </header>
+                                        <div class="calendar">
+                                            <ul class="weeks">
+                                                <li>Sun</li>
+                                                <li>Mon</li>
+                                                <li>Tue</li>
+                                                <li>Wed</li>
+                                                <li>Thu</li>
+                                                <li>Fri</li>
+                                                <li>Sat</li>
+                                            </ul>
+                                            <ul class="days"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                    <button type="button" class="btn btn-primary" onclick="applyDate()">적용</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <select th:if="${#strings.equals(session.userRole, 'HEAD')}" id="selectedBranch3">
+                        <option value="" selected>전체</option>
+                        <option th:each="branch : ${branches}"
+                                th:value="${branch.branchId}"
+                                th:text="${branch.branchName}">
+                        </option>
+                    </select>
+                    
+                    <button class="btn btn-warning" onclick="applyDateAndBranch()">조회</button>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
         <!-- Pie Chart -->
         <div class="col-xl-12 col-lg-12">
             <div class="card shadow mb-4">
@@ -109,6 +183,7 @@
         </div>
     </div>
 </div>
+
 <th:block layout:fragment="script">
     <!-- axios 비동기 통신용 -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -120,8 +195,10 @@
         let userRole = [[ ${session.userRole} ]];
         let branchId = [[ ${session.branchId} ]];
     </script>
+    <script src="/js/modal.js"></script>
     <script src="/js/demo/barChart.js"></script>
     <script src="/js/demo/areaChart.js"></script>
+    <script src="/js/demo/lineChart.js"></script>
 </th:block>
 </body>
 </html>
