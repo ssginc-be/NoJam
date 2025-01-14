@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <title>회원 정보 수정</title>
+
+    <!-- SUIT 폰트 (CDN) -->
+    <link
+            href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/stylesheet.css"
+            rel="stylesheet"
+    />
+
+    <!-- 커스텀 CSS -->
+    <link rel="stylesheet" th:href="@{/css/update-mypage.css}"/>
+</head>
+<body>
+<!-- Begin Page Content -->
+<div class="container" layout:fragment="content">
+
+    <!-- Page Heading -->
+    <div class="header">
+        <h1>회원 정보 수정</h1>
+        <a href="/member/mypage" class="back-button">뒤로 가기</a>
+    </div>
+
+    <!-- 서버측 성공 메시지 -->
+    <div th:if="${successMessage}" class="success-message">
+        <span th:text="${successMessage}"></span>
+    </div>
+
+    <!-- 서버측 에러 메시지 -->
+    <div th:if="${error}" class="error-message">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- 사용자명 수정 폼 -->
+    <div class="update-form">
+        <form action="/member/updateInfo" method="POST" id="updateUserNameForm">
+            <div class="section">
+                <h4 class="section-header">사용자명 변경</h4>
+                <table class="form-table">
+                    <tr>
+                        <th><label for="userName">새 사용자명</label></th>
+                        <td>
+                            <input type="text" id="userName" name="userName" class="form-control" th:value="${member.userName}" required />
+                        </td>
+                    </tr>
+                </table>
+                <div class="button-group">
+                    <button type="submit" name="updateType" value="name" class="submit-btn">변경하기</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- 비밀번호 수정 폼 -->
+        <form action="/member/updateInfo" method="POST" id="updatePasswordForm">
+            <div class="section">
+                <h4 class="section-header">비밀번호 변경</h4>
+                <table class="form-table">
+                    <tr>
+                        <th><label for="currentPassword">현재 비밀번호</label></th>
+                        <td>
+                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="현재 비밀번호를 입력하세요." required/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="newPassword">새 비밀번호</label></th>
+                        <td>
+                            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="새 비밀번호를 입력하세요." required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="confirmNewPassword">새 비밀번호 확인</label></th>
+                        <td>
+                            <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control" placeholder="새 비밀번호를 다시 입력하세요." required />
+                            <span class="pw-match-status" id="pwMatchStatus"></span>
+                        </td>
+                    </tr>
+                </table>
+                <div class="button-group">
+                    <button type="submit" name="updateType" value="password" class="submit-btn">변경하기</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.container -->
+
+<!-- Bootstrap core JavaScript-->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/js/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<th:block layout:fragment="script">
+    <script>
+        // 비밀번호 일치 검사
+        function checkPasswordMatch() {
+            const newPassword = document.getElementById("newPassword").value.trim();
+            const confirmNewPassword = document.getElementById("confirmNewPassword").value.trim();
+            const pwMatchStatus = document.getElementById("pwMatchStatus");
+
+            if (newPassword === "" && confirmNewPassword === "") {
+                pwMatchStatus.textContent = "";
+                pwMatchStatus.style.visibility = "hidden";
+                return;
+            }
+
+            if (newPassword === confirmNewPassword) {
+                pwMatchStatus.style.color = "green"; /* 성공 메시지 색상 */
+                pwMatchStatus.textContent = "✔ 일치";
+            } else {
+                pwMatchStatus.style.color = "red"; /* 에러 메시지 색상 */
+                pwMatchStatus.textContent = "⚠ 불일치";
+            }
+            pwMatchStatus.style.visibility = "visible";
+        }
+
+        document.getElementById("newPassword").addEventListener("input", checkPasswordMatch);
+        document.getElementById("confirmNewPassword").addEventListener("input", checkPasswordMatch);
+
+        // 사용자명 수정 폼 검증
+        document.getElementById("updateUserNameForm").addEventListener("submit", function (e) {
+            const userName = document.getElementById("userName").value.trim();
+            if (userName === "") {
+                alert("사용자명을 입력해주세요.");
+                e.preventDefault(); // 폼 제출 취소
+                return;
+            }
+        });
+
+        // 비밀번호 수정 폼 검증
+        document.getElementById("updatePasswordForm").addEventListener("submit", function (e) {
+            const newPassword = document.getElementById("newPassword").value.trim();
+            const confirmNewPassword = document.getElementById("confirmNewPassword").value.trim();
+
+            if (newPassword !== confirmNewPassword) {
+                alert("새 비밀번호가 일치하지 않습니다.");
+                e.preventDefault(); // 폼 제출 취소
+                return;
+            }
+
+            // 비밀번호 길이 검사 (최소 4자)
+            if (newPassword.length < 4) {
+                alert("새 비밀번호는 최소 4글자 이상이어야 합니다.");
+                e.preventDefault(); // 폼 제출 취소
+                return;
+            }
+
+            // 현재 비밀번호가 입력되었는지 확인 (서버에서 다시 검증)
+            const currentPassword = document.getElementById("currentPassword").value.trim();
+            if (currentPassword === "") {
+                alert("현재 비밀번호를 입력해주세요.");
+                e.preventDefault(); // 폼 제출 취소
+                return;
+            }
+        });
+    </script>
+</th:block>
+
+</body>
+</html>
