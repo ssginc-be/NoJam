@@ -175,18 +175,22 @@ public class MemberController {
             // 세션 설정
             session.setAttribute("userId", dbMember.getUserId());
             session.setAttribute("userName", dbMember.getUserName());
-            session.setAttribute("userRole", dbMember.getUserRole());
+            session.setAttribute("userEmail", dbMember.getUserEmail());
             session.setAttribute("branchId", dbMember.getBranchId());
             if (branchName != null) {
-                session.setAttribute("branch_name", branchName);
+                session.setAttribute("branchName", branchName);
+            } else {
+                session.setAttribute("branchName", "N/A");
             }
+            session.setAttribute("userRole", dbMember.getUserRole());
 
             System.out.println("로그인 성공 - 세션 정보:");
             System.out.println("ID: " + session.getAttribute("userId"));
             System.out.println("Name: " + session.getAttribute("userName"));
-            System.out.println("Role: " + session.getAttribute("userRole"));
+            System.out.println("Email: " + session.getAttribute("userEmail"));
             System.out.println("Branch ID: " + session.getAttribute("branchId"));
             System.out.println("Branch Name: " + session.getAttribute("branchName"));
+            System.out.println("Role: " + session.getAttribute("userRole"));
 
             // user_role에 따라 리다이렉트 경로 설정
             String userRole = dbMember.getUserRole();
@@ -219,9 +223,10 @@ public class MemberController {
 
         session.removeAttribute("userId");
         session.removeAttribute("userName");
-        session.removeAttribute("userRole");
+        session.removeAttribute("userEmail");
         session.removeAttribute("branchId");
         session.removeAttribute("branchName");
+        session.removeAttribute("userRole");
 
         return "redirect:/";
     }
@@ -298,4 +303,99 @@ public class MemberController {
         return sb.toString();
     }
 
+    // 마이페이지로 이동
+    @GetMapping("mypage")
+    public String myPage(HttpSession session, Model model) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            // 로그인되지 않은 사용자는 로그인 페이지로 리다이렉트
+            return "redirect:/";
+        }
+
+        MemberVO member = memberService.getMemberById(userId);
+        if (member == null) {
+            model.addAttribute("error", "회원 정보를 불러올 수 없습니다.");
+            return "error"; // 에러 페이지로 이동 (적절히 설정 필요)
+        }
+
+        BranchVO branch = null;
+        String branchName = "N/A"; // 기본값 설정
+        if (member.getBranchId() != null) {
+            branch = branchService.selectBranchName(member.getBranchId());
+            if (branch != null) {
+                branchName = branch.getBranchName();
+            }
+        }
+
+        model.addAttribute("member", member);
+        model.addAttribute("branchName", branchName);
+
+        return "member/mypage";
+    }
+
+    // 정보 수정 페이지로 이동
+    @GetMapping("update-mypage")
+    public String updateMyPage(HttpSession session, Model model) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/";
+        }
+
+        MemberVO member = memberService.getMemberById(userId);
+        if (member == null) {
+            model.addAttribute("error", "회원 정보를 불러올 수 없습니다.");
+            return "error";
+        }
+
+        model.addAttribute("member", member);
+        return "member/update-mypage";
+    }
+
+    // 마이페이지 정보 업데이트 처리
+    @PostMapping("updateInfo")
+    public String updateInfo(
+            @RequestParam(required = false) String userName,
+            @RequestParam(required = false) String currentPassword,
+            @RequestParam(required = false) String newPassword,
+            @RequestParam(required = false) String confirmNewPassword,
+            @RequestParam String updateType,
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            // 로그인되지 않은 사용자는 로그인 페이지로 리다이렉트
+            return "redirect:/";
+        }
+
+        // 회원 정보 업데이트
+        boolean updateSuccess = false;
+
+        if ("name".equals(updateType)) {
+            // 사용자명 업데이트
+            updateSuccess = memberService.updateUserName(userId, userName);
+            if (updateSuccess) {
+                // 세션 정보 갱신
+                session.setAttribute("userName", userName);
+                redirectAttributes.addFlashAttribute("successMessage", "사용자명이 성공적으로 업데이트되었습니다.");
+            } else {
+                model.addAttribute("error", "사용자명 업데이트에 실패했습니다.");
+            }
+        } else if ("password".equals(updateType)) {
+            // 비밀번호 업데이트
+            updateSuccess = memberService.updatePassword(userId, currentPassword, newPassword, confirmNewPassword);
+            if (updateSuccess) {
+                redirectAttributes.addFlashAttribute("successMessage", "비밀번호가 성공적으로 업데이트되었습니다.");
+            } else {
+                model.addAttribute("error", "비밀번호 업데이트에 실패했습니다. 현재 비밀번호를 확인해주세요.");
+            }
+        }
+
+        if (updateSuccess) {
+            return "redirect:/member/update-mypage";
+        } else {
+            return "member/update-mypage";
+        }
+    }
 }

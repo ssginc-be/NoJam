@@ -77,4 +77,58 @@ public class MemberService {
         MemberVO member = memberMapper.selectMemberByEmail(userEmail);
         return member != null; // null이 아니면 중복
     }
+
+    // 사용자명 업데이트
+    public boolean updateUserName(String userId, String newUserName) {
+        if (newUserName == null || newUserName.trim().isEmpty()) {
+            log.warn("새 사용자명이 비어 있습니다: userId={}", userId);
+            return false;
+        }
+
+        MemberVO updatedMember = new MemberVO();
+        updatedMember.setUserId(userId);
+        updatedMember.setUserName(newUserName.trim());
+
+        int result = memberMapper.updateUserName(updatedMember);
+        return result > 0;
+    }
+
+    // 비밀번호 업데이트
+    public boolean updatePassword(String userId, String currentPassword, String newPassword, String confirmNewPassword) {
+        MemberVO member = memberMapper.selectMemberById(userId);
+        if (member == null) {
+            log.warn("회원 정보 조회 실패: userId={}", userId);
+            return false;
+        }
+
+        // 현재 비밀번호 검증
+        if (!passwordEncoder.matches(currentPassword, member.getUserPw())) {
+            log.warn("비밀번호 검증 실패: userId={}", userId);
+            return false;
+        }
+
+        // 새로운 비밀번호가 입력된 경우 검증
+        if (newPassword == null || newPassword.isEmpty()) {
+            log.warn("새 비밀번호가 입력되지 않음: userId={}", userId);
+            return false;
+        }
+
+        if (!newPassword.equals(confirmNewPassword)) {
+            log.warn("새 비밀번호와 확인 비밀번호가 일치하지 않음: userId={}", userId);
+            return false;
+        }
+
+        // 비밀번호 길이 검증 (예: 최소 4글자)
+        if (newPassword.length() < 4) {
+            log.warn("새 비밀번호가 너무 짧음: userId={}", userId);
+            return false;
+        }
+
+        // 비밀번호 암호화
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
+        // 비밀번호 업데이트
+        int result = memberMapper.updatePassword(userId, encodedNewPassword);
+        return result > 0;
+    }
 }

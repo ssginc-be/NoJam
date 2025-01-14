@@ -19,4 +19,10 @@ public interface MemberMapper {
 
     // 이메일로 회원 조회
     MemberVO selectMemberByEmail(@Param("userEmail") String userEmail);
+
+    // 마이페이지 회원 정보 수정
+    // 사용자명 업데이트
+    int updateUserName(MemberVO memberVO);
+    // 비밀번호 업데이트
+    int updatePassword(@Param("userId") String userId, @Param("userPw") String userPw);
 }
