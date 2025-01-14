@@ -34,4 +34,7 @@ public interface StockMapper {
             @Param("startIdx") int startIdx
     );
     int countFilteredBranchStock(@Param("branchId") String branchId, @Param("category") String category, @Param("value") String value);
+
+    // 출고 승인하려할 시 본사 재고 확인 용도
+    int getHeadStockByItemId(Integer itemId);
 }

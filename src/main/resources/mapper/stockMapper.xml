@@ -115,4 +115,12 @@
         LIMIT ${startIdx}, 50
     </select>
 
+    <!-- 상품ID로 본사 재고 조회 -->
+    <select id="getHeadStockByItemId"
+            resultType="int">
+        SELECT stock
+        FROM head_stock
+        WHERE item_id = ${itemId}
+    </select>
+
 </mapper>
