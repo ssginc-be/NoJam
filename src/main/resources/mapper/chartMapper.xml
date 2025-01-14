@@ -44,4 +44,29 @@
         ORDER BY i.category2
     </select>
 
+    <select id="getSalesByDayOfWeek"
+            resultType="com.ssginc.nojam.chart.vo.GetSalesAndDateDto">
+        WITH RECURSIVE CTE AS (
+            SELECT DATE(#{startDate}) AS date
+            UNION ALL
+            SELECT DATE_ADD(date, INTERVAL 1 DAY)
+            FROM CTE
+            WHERE date &lt; DATE(#{endDate})
+        )
+        SELECT CTE.date AS dayOfWeek, IFNULL(s.sum, 0) AS sumOfSales
+        FROM CTE
+        LEFT OUTER JOIN (
+            SELECT DATE(sales_date) AS temp, SUM(sales_quantity) AS sum
+            FROM sales
+            WHERE sales_date
+            BETWEEN DATE(#{startDate}) AND (DATE(#{endDate}) + 1)
+            <if test='branchId != ""'>
+                AND branch_id = #{branchId}
+            </if>
+            GROUP BY DATE(sales_date)
+            ORDER BY DATE(sales_date) ASC
+        ) s
+        ON CTE.date = temp
+    </select>
+
 </mapper>
