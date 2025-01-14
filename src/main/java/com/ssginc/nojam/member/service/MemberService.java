@@ -55,4 +55,28 @@ public class MemberService {
     public MemberVO getMemberById(String id) {
         return memberMapper.selectMemberById(id);
     }
+
+    /**
+     * 임시 비밀번호를 생성하고 데이터베이스에 저장
+     * @param userEmail 사용자의 이메일 주소
+     * @param tempPassword 생성된 임시 비밀번호
+     * @return 업데이트 성공 여부
+     */
+    public boolean resetPassword(String userEmail, String tempPassword) {
+        // 비밀번호 암호화
+        String hashedTempPassword = passwordEncoder.encode(tempPassword);
+        // 데이터베이스 업데이트
+        int result = memberMapper.updatePasswordByEmail(userEmail, hashedTempPassword);
+        return result > 0;
+    }
+
+    /**
+     * 주어진 이메일로 회원 정보를 조회
+     * @param userEmail 사용자의 이메일 주소
+     * @return 해당 이메일을 가진 회원 정보 또는 null
+     */
+    public MemberVO getMemberByEmail(String userEmail) {
+        // MyBatis 매퍼에 selectMemberByEmail 메서드를 추가해야 합니다.
+        return memberMapper.selectMemberByEmail(userEmail);
+    }
 }

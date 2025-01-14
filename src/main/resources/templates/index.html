@@ -113,6 +113,13 @@
   </script>
 </th:block>
 
+<!-- 임시 비밀번호 발급 성공 시 alert 메시지 표시 -->
+<th:block th:if="${sendSuccess}">
+  <script>
+    alert("임시 비밀번호가 이메일로 전송되었습니다. 이메일을 확인해주세요.");
+  </script>
+</th:block>
+
 <!-- 자바스크립트 로직(axios 등) -->
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>

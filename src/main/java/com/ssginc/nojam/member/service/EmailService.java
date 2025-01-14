@@ -46,4 +46,30 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    /**
+     * 임시 비밀번호를 사용자에게 전송하는 메서드입니다.
+     * @param toEmail     받는 사람의 이메일 주소
+     * @param tempPassword 생성된 임시 비밀번호
+     * @throws MessagingException 이메일 전송 중 예외 발생 시
+     */
+    public void sendTempPasswordMail(String toEmail, String tempPassword) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        // true: 멀티파트 메세지
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setFrom("ssginc55@gmail.com");   // 보내는 사람
+        helper.setTo(toEmail);                  // 받는 사람
+        helper.setSubject("[NoJam] 임시 비밀번호 안내"); // 메일 제목
+
+        // 메일 내용 (HTML 가능)
+        helper.setText(
+                "<h1>비밀번호 재설정</h1>" +
+                        "<p>아래 임시 비밀번호를 사용하여 로그인한 후, 반드시 비밀번호를 변경해주세요.</p>" +
+                        "<h3>" + tempPassword + "</h3>",
+                true
+        );
+
+        mailSender.send(message);
+    }
 }

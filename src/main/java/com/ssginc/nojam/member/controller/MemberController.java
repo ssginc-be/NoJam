@@ -5,12 +5,16 @@ import com.ssginc.nojam.member.service.EmailService;
 import com.ssginc.nojam.member.service.MemberService;
 import com.ssginc.nojam.member.vo.MemberVO;
 import com.ssginc.nojam.branch.vo.BranchVO;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.SecureRandom;
 
 @Slf4j
 @Controller
@@ -213,6 +217,79 @@ public class MemberController {
         System.out.println("========================================");
         System.out.println("GET request to find password received...");
 
-        return "/member/forgot-password";
+        return "/member/find-pw";
+    }
+
+    /**
+     * 비밀번호 찾기 폼 제출을 처리하는 메서드
+     * @param userEmail 사용자가 입력한 이메일 주소
+     * @param model     뷰에 데이터를 전달하기 위한 모델
+     * @return find-pw.html 뷰
+     */
+    @PostMapping("find-password")
+    public String findPassword(@RequestParam String userEmail,
+                               @RequestParam(required = false) String emailDomain,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
+        log.info("비밀번호 찾기 요청 - 이메일: {}", userEmail);
+
+        // 이메일 도메인을 결합
+        if (emailDomain != null && !emailDomain.isEmpty()) {
+            userEmail += emailDomain;
+        }
+
+        log.info("완성된 이메일: {}", userEmail);
+
+        // 이메일로 회원 조회
+        MemberVO member = memberService.getMemberByEmail(userEmail);
+
+        if (member == null) {
+            // 이메일이 존재하지 않을 경우
+            model.addAttribute("error", "입력하신 이메일 주소는 등록되지 않았습니다.");
+            return "member/find-pw";
+        }
+
+        // 임시 비밀번호 생성 (예: 8자리 영문 대소문자 및 숫자 조합)
+        String tempPassword = generateTempPassword(8);
+        log.info("생성된 임시 비밀번호: {}", tempPassword);
+
+        // 임시 비밀번호를 데이터베이스에 저장
+        boolean updateSuccess = memberService.resetPassword(userEmail, tempPassword);
+        if (!updateSuccess) {
+            model.addAttribute("sendError", true);
+            return "member/find-pw";
+        }
+
+        // 이메일로 임시 비밀번호 전송
+        try {
+            emailService.sendTempPasswordMail(userEmail, tempPassword);
+            //model.addAttribute("sendSuccess", true);  // 비밀번호 찾기 화면에 그대로 있는 경우
+            log.info("임시 비밀번호가 {}로 전송되었습니다.", userEmail);
+            // 성공 메시지를 플래시 어트리뷰트로 전달
+            redirectAttributes.addFlashAttribute("sendSuccess", true);
+            return "redirect:/"; // index.html로 리다이렉트
+        } catch (MessagingException e) {
+            log.error("이메일 전송 실패: ", e);
+            model.addAttribute("sendError", true);
+            return "member/find-pw";
+        }
+    }
+
+    /**
+     * 지정된 길이의 임시 비밀번호를 생성합니다.
+     *
+     * @param length 생성할 임시 비밀번호의 길이
+     * @return 생성된 임시 비밀번호
+     */
+    private String generateTempPassword(int length) {
+        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+
+        for(int i = 0; i < length; i++) {
+            sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
+
+        return sb.toString();
     }
 }
