@@ -3,12 +3,15 @@ package com.ssginc.nojam.chart.service;
 import com.ssginc.nojam.chart.mapper.ChartMapper;
 import com.ssginc.nojam.chart.vo.GetBranchIdAndNameDto;
 import com.ssginc.nojam.chart.vo.GetSalesAndDateDto;
+import com.ssginc.nojam.chart.vo.GetStatusAndCountDto;
+import com.ssginc.nojam.chart.vo.GetStatusAndPercentageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +59,23 @@ public class ChartService {
 
     public int getSalesAmountByYear(String branchId, String date) {
         return chartMapper.getSalesAmountByYear(branchId, date);
+    }
+
+    public List<GetStatusAndPercentageDto> getStatusCount() {
+
+        List<GetStatusAndCountDto> statusCounts = chartMapper.getStatusCount();
+
+        int total = statusCounts.stream()
+                .mapToInt(GetStatusAndCountDto::getCount)
+                .sum();
+
+        return statusCounts.stream()
+                .map(dto -> {
+                    double percentage = (double) dto.getCount() / total * 100;
+
+                    return new GetStatusAndPercentageDto(dto.getStatus(), percentage);
+                })
+                .collect(Collectors.toList());
     }
 
 }

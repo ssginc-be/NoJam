@@ -2,6 +2,7 @@ package com.ssginc.nojam.chart.mapper;
 
 import com.ssginc.nojam.chart.vo.GetBranchIdAndNameDto;
 import com.ssginc.nojam.chart.vo.GetSalesAndDateDto;
+import com.ssginc.nojam.chart.vo.GetStatusAndCountDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,5 +26,7 @@ public interface ChartMapper {
     int getSalesAmountByMonth(String branchId, String date);
 
     int getSalesAmountByYear(String branchId, String date);
+
+    List<GetStatusAndCountDto> getStatusCount();
 
 }
