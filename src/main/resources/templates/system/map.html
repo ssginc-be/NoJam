@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head layout:fragment="head">
+    <!-- 부모 head 내용 포함 -->
+    <th:block layout:include="~{layout :: head}"/>
+    <title>전국 지점 조회</title>
+    <link href="/css/map.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Suit:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- 카카오 지도 JS SDK -->
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e44771c92e254860db6908e4ce5e70fb"></script>
+
+</head>
+<body>
+
+    <!-- content fragment로 부모 layout의 content 영역을 대체 -->
+    <div layout:fragment="content" class="container">
+        <div class="header">
+            <div class="header-left">
+                <h2>지점 관리</h2>
+                <p>전국 지점 조회</p>
+            </div>
+        </div>
+
+        <div class="search-bar-row">
+            <div class="search-bar-left">
+                <select id="search-type" class="search-dropdown">
+                    <option value="">구분</option>
+                    <option value="branchName">지점명</option>
+                    <option value="branchAddress">주소</option>
+                </select>
+                <input id="search-input" class="search-input" type="text" placeholder="검색어를 입력하세요">
+                <button id="search-btn" class="search-button">검색</button>
+            </div>
+            <div class="search-results">
+                총 <span id="result-count" class="bold-text">0</span>건이 검색되었습니다.
+            </div>
+        </div>
+
+        <div class="map-info-container">
+            <div id="map"></div>
+            <div class="info-panel">
+                <h3>선택 지점 정보</h3>
+
+                <!-- 지점 ID -->
+                <div class="info-item">
+                    <label class="label" for="input-branch-id">지점 ID:</label>
+                    <input type="text" id="input-branch-id" disabled placeholder="-" />
+                </div>
+
+                <!-- 지점명 -->
+                <div class="info-item">
+                    <label class="label" for="input-branch-name">지점명:</label>
+                    <input type="text" id="input-branch-name" disabled placeholder="-" />
+                </div>
+
+                <!-- 우편번호 -->
+                <div class="info-item">
+                    <label class="label" for="input-branch-postcode">우편번호:</label>
+                    <input type="text" id="input-branch-postcode" disabled placeholder="-" />
+                </div>
+
+                <!-- 주소 -->
+                <div class="info-item">
+                    <label class="label" for="input-branch-address">주소:</label>
+                    <input type="text" id="input-branch-address" disabled placeholder="-" />
+                </div>
+
+                <!-- 최종 수정일 -->
+                <div class="info-item">
+                    <label class="label" for="input-branch-date">최종 수정일:</label>
+                    <input type="text" id="input-branch-date" disabled placeholder="-" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="table-container">
+            <h3>지점 조회 결과</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>지점명</th>
+                    <th>주소</th>
+                    <th>상세정보</th>
+                </tr>
+                </thead>
+                <tbody id="branch-table">
+                <!-- 데이터 행 추가 -->
+                </tbody>
+            </table>
+
+            <div class="pagination" id="pagination">
+                <button>&lt;</button>
+                <button>1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>&gt;</button>
+            </div>
+        </div>
+
+    </div>
+    <th:block layout:fragment="script">
+        <!-- axios 비동기 통신용 -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+        <!-- map.js 스크립트 포함 -->
+        <script src="/js/map.js"></script>
+    </th:block>
+</body>
+
+</html>
+
+
