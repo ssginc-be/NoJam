@@ -40,4 +40,4 @@ out/
 logs/
 
 # SMTP
-/src/main/resources/smtp.properties
+/src/main/resources/confidential.properties
