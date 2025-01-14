@@ -30,6 +30,11 @@ public class MemberController {
     @PostMapping("sendCode")
     @ResponseBody
     public String sendEmailVerificationCode(@RequestParam String userEmail, HttpSession session) {
+        // 이메일 중복 체크
+        if (memberService.isEmailDuplicate(userEmail)) {
+            return "duplicate"; // 중복된 이메일
+        }
+
         // 1. 인증 코드 생성
         String authCode = emailService.createAuthCode();
         // 2. 인증 코드 메일로 보내기
@@ -97,14 +102,22 @@ public class MemberController {
         if (emailAuthCode == null || !emailAuthCode.equals(emailAuthCodeInput)) {
             // 인증 실패
             model.addAttribute("error", "이메일 인증에 실패했습니다. 인증 코드를 다시 확인해주세요!");
-            return "signup";
+            return "member/signup";
+        }
+
+        // 이메일 중복 체크 (서버 측)
+        // 클라이언트 측에서의 중복 체크가 완료되었더라도,
+        // 두 요청 간에 다른 사용자가 동일한 이메일로 가입했을 가능성을 방지
+        if (memberService.isEmailDuplicate(memberVO.getUserEmail())) {
+            model.addAttribute("error", "입력하신 이메일 주소는 이미 사용 중입니다.");
+            return "member/signup";
         }
 
         // 이메일 형식 검증
         String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
         if (!memberVO.getUserEmail().matches(emailPattern)) {
             model.addAttribute("error", "올바른 이메일 형식을 입력해주세요!");
-            return "signup";
+            return "member/signup";
         }
 
         // 3) (인증 성공) 비밀번호 암호화 & DB에 회원 정보 저장
@@ -127,7 +140,7 @@ public class MemberController {
         return result;
     }
 
-
+    // 로그인
     @PostMapping("login")
     public String login(MemberVO memberVO, HttpSession session, Model model) {
         System.out.println("========================================");
@@ -198,6 +211,7 @@ public class MemberController {
 
     }
 
+    // 로그아웃
     @GetMapping("logout")
     public String logout(HttpSession session) {
         System.out.println("========================================");
@@ -207,11 +221,12 @@ public class MemberController {
         session.removeAttribute("userName");
         session.removeAttribute("userRole");
         session.removeAttribute("branchId");
+        session.removeAttribute("branchName");
 
         return "redirect:/";
     }
 
-    // localhost:8080/member/forgot-password
+    // 비밀번호 찾기 화면
     @GetMapping("forgot-password")
     public String forgotPw() {
         System.out.println("========================================");
@@ -220,12 +235,7 @@ public class MemberController {
         return "/member/find-pw";
     }
 
-    /**
-     * 비밀번호 찾기 폼 제출을 처리하는 메서드
-     * @param userEmail 사용자가 입력한 이메일 주소
-     * @param model     뷰에 데이터를 전달하기 위한 모델
-     * @return find-pw.html 뷰
-     */
+    // 임시 비밀번호 발급 SMTP
     @PostMapping("find-password")
     public String findPassword(@RequestParam String userEmail,
                                @RequestParam(required = false) String emailDomain,
@@ -275,21 +285,17 @@ public class MemberController {
         }
     }
 
-    /**
-     * 지정된 길이의 임시 비밀번호를 생성합니다.
-     *
-     * @param length 생성할 임시 비밀번호의 길이
-     * @return 생성된 임시 비밀번호
-     */
+    // 임시 비밀번호 생성
     private String generateTempPassword(int length) {
         final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder();
 
-        for(int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
         return sb.toString();
     }
+
 }
