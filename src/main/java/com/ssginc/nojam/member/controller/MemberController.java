@@ -195,13 +195,13 @@ public class MemberController {
             // user_role에 따라 리다이렉트 경로 설정
             String userRole = dbMember.getUserRole();
             if ("GUEST".equals(userRole)) {
-                return "redirect:/home/";  // 수정 필요
+                return "redirect:/";  // 수정 필요
             } else if ("BWKR".equals(userRole)) {
-                return "redirect:/home/";  // 수정 필요
+                return "redirect:/chart/";
             } else if ("BMNG".equals(userRole)) {
-                return "redirect:/home/";  // 수정 필요
+                return "redirect:/chart/";
             } else if ("HEAD".equals(userRole)) {
-                return "redirect:/home/";  // 수정 필요
+                return "redirect:/chart/";
             } else {
                 model.addAttribute("loginError", "Invalid Role");
                 return "index";

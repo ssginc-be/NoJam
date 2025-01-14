@@ -92,13 +92,9 @@
     <!-- 이미지 영역 -->
     <div class="login-image-container">
       <div class="login-image-area">
-        <img th:src="@{/img/no-brand-store.jpg}"
+        <img th:src="@{/img/welcome-bg.png}"
              alt="브랜드 매장 이미지"
              class="login-image"/>
-        <div class="image-overlay-text">
-          이 부분에 흰색으로 텍스트 올라갈 예정<br/>
-          근데 뭐 올릴진 미확정
-        </div>
       </div>
     </div>
 
@@ -109,7 +105,7 @@
 <!-- 로그인 실패 시 alert 메시지 표시 -->
 <th:block th:if="${loginError}">
   <script>
-    alert("Invalid ID or Password");
+    alert("아이디 또는 패스워드가 맞지 않습니다.");
   </script>
 </th:block>
 

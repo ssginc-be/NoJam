@@ -42,9 +42,12 @@ body {
 .search-dropdown,
 .search-input,
 .search-button {
-    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+.search-dropdown,
+.search-input {
+    padding: 10px;
 }
 .search-dropdown {
     width: 120px;
@@ -54,9 +57,11 @@ body {
     min-width: 200px;
 }
 .search-button {
+    width: 80px;
+    height: 42px;
     background-color: #FFD028;
     color: #0D183F;
-    font-weight : bold;
+    font-weight : 600;
     cursor: pointer;
 }
 .search-button:hover {
@@ -145,6 +150,7 @@ table {
     word-wrap: break-word; /* 텍스트가 길 경우 줄바꿈 */
     text-align: center;
     border: 1px solid #ddd;
+    font-weight: 500;
 }
 
 .table-container th:nth-child(1),

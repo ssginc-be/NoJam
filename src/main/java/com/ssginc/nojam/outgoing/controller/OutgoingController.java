@@ -80,7 +80,7 @@ public class OutgoingController {
     public String viewIndeliveryOutgoing(@PathVariable("pdx") int pdx, Model model) {
         int pageIdx = (pdx-1) * 50;
 
-        int totalRow = outgoingMapper.countAllPendingOutgoings(); // 총 totalRow개의 검색 결과
+        int totalRow = outgoingMapper.countAllIndeliveryOutgoings(); // 총 totalRow개의 검색 결과
         int pageBlockSize = 5; // 1 2 3 4 5
         int pageNavSize = (int)Math.ceil((double)totalRow / pageBlockSize); // << >> 를 몇 번 할 수 있는지
 

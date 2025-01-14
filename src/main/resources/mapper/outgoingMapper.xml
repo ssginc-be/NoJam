@@ -35,6 +35,16 @@
         WHERE order.status = '출고대기'
     </select>
 
+    <!-- 모든 출고중 개수 조회 -->
+    <select id="countAllIndeliveryOutgoings"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM `order`
+                 JOIN item USING(item_id)
+                 JOIN branch USING(branch_id)
+        WHERE order.status = '출고중'
+    </select>
+
     <!-- 모든 출고대기 조회 -->
     <select id="get50PendingOutgoings"
             resultType="com.ssginc.nojam.outgoing.dto.OutgoingViewDTO">

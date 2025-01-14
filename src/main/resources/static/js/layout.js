@@ -34,10 +34,5 @@ function activateSubmenu(element) {
 function logout(event) {
     event.stopPropagation();
     alert('로그아웃 되었습니다.');
-    location.href = '/member/logout';
-}
-
-function myPage(event) {
-    event.stopPropagation();
-    location.href = '/member/mypage';
+    location.href = '/';
 }

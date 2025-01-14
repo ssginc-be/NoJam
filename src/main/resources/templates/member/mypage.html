@@ -21,56 +21,57 @@
 </head>
 <body>
 <!-- Begin Page Content -->
-<div class="container" layout:fragment="content">
+<div class="content">
+    <div class="container" layout:fragment="content">
 
-    <!-- Page Heading -->
-    <div class="header">
-        <h1>마이페이지</h1>
-        <a href="/member/update-mypage" class="edit-button">정보 수정</a>
-    </div>
+        <div class="header">
+            <span class="main-title">마이페이지</span>
+            <a href="/member/update-mypage" class="edit-button">정보 수정</a>
+        </div>
 
-    <!-- 서버측 성공 메시지 -->
-    <div th:if="${successMessage}" class="success-message">
-        <span th:text="${successMessage}"></span>
-    </div>
+        <!-- 서버측 성공 메시지 -->
+        <div th:if="${successMessage}" class="success-message">
+            <span th:text="${successMessage}"></span>
+        </div>
 
-    <!-- 서버측 에러 메시지 -->
-    <div th:if="${error}" class="error-message">
-        <span th:text="${error}"></span>
-    </div>
+        <!-- 서버측 에러 메시지 -->
+        <div th:if="${error}" class="error-message">
+            <span th:text="${error}"></span>
+        </div>
 
-    <!-- 회원 정보 확인 섹션 -->
-    <h4 class="section-header">회원 정보</h4>
-    <div class="section user-info">
-        <table class="info-table">
-            <tr>
-                <th>아이디</th>
-                <td th:text="${member.userId}"></td>
-            </tr>
-            <tr>
-                <th>사용자명</th>
-                <td th:text="${member.userName}"></td>
-            </tr>
-            <tr>
-                <th>이메일</th>
-                <td th:text="${member.userEmail}"></td>
-            </tr>
-            <tr>
-                <th>지점 ID</th>
-                <td th:text="${member.branchId} != null ? ${member.branchId} : 'N/A'"></td>
-            </tr>
-            <tr>
-                <th>지점명</th>
-                <td th:text="${branchName}"></td>
-            </tr>
-            <tr>
-                <th>역할</th>
-                <td th:text="${member.userRole}"></td>
-            </tr>
-        </table>
+        <!-- 회원 정보 확인 섹션 -->
+        <h4 class="section-header">회원 정보</h4>
+        <div class="section user-info">
+            <table class="info-table">
+                <tr>
+                    <th>아이디</th>
+                    <td th:text="${member.userId}"></td>
+                </tr>
+                <tr>
+                    <th>사용자명</th>
+                    <td th:text="${member.userName}"></td>
+                </tr>
+                <tr>
+                    <th>이메일</th>
+                    <td th:text="${member.userEmail}"></td>
+                </tr>
+                <tr>
+                    <th>지점 ID</th>
+                    <td th:text="${member.branchId} != null ? ${member.branchId} : 'N/A'"></td>
+                </tr>
+                <tr>
+                    <th>지점명</th>
+                    <td th:text="${branchName}"></td>
+                </tr>
+                <tr>
+                    <th>역할</th>
+                    <td th:text="${member.userRole}"></td>
+                </tr>
+            </table>
+        </div>
     </div>
+    <!-- /.container -->
 </div>
-<!-- /.container -->
 
 <!-- Bootstrap core JavaScript-->
 <script src="/js/jquery.min.js"></script>

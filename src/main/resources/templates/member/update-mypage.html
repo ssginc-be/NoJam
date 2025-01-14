@@ -21,76 +21,82 @@
 </head>
 <body>
 <!-- Begin Page Content -->
-<div class="container" layout:fragment="content">
+<div class="content">
+    <div class="container" layout:fragment="content">
 
-    <!-- Page Heading -->
-    <div class="header">
-        <h1>회원 정보 수정</h1>
-        <a href="/member/mypage" class="back-button">뒤로 가기</a>
-    </div>
+        <!-- Page Heading -->
+        <div class="header">
+            <span class="main-title">회원 정보 수정</span>
+            <a href="/member/mypage" class="back-button" style="text-decoration: none;">뒤로 가기</a>
+        </div>
 
-    <!-- 서버측 성공 메시지 -->
-    <div th:if="${successMessage}" class="success-message">
-        <span th:text="${successMessage}"></span>
-    </div>
+        <!-- 서버측 성공 메시지 -->
+        <div th:if="${successMessage}" class="success-message">
+            <span th:text="${successMessage}"></span>
+        </div>
 
-    <!-- 서버측 에러 메시지 -->
-    <div th:if="${error}" class="error-message">
-        <span th:text="${error}"></span>
-    </div>
+        <!-- 서버측 에러 메시지 -->
+        <div th:if="${error}" class="error-message">
+            <span th:text="${error}"></span>
+        </div>
 
-    <!-- 사용자명 수정 폼 -->
-    <div class="update-form">
-        <form action="/member/updateInfo" method="POST" id="updateUserNameForm">
-            <div class="section">
-                <h4 class="section-header">사용자명 변경</h4>
-                <table class="form-table">
-                    <tr>
-                        <th><label for="userName">새 사용자명</label></th>
-                        <td>
-                            <input type="text" id="userName" name="userName" class="form-control" th:value="${member.userName}" required />
-                        </td>
-                    </tr>
-                </table>
-                <div class="button-group">
-                    <button type="submit" name="updateType" value="name" class="submit-btn">변경하기</button>
+        <!-- 사용자명 수정 폼 -->
+        <div class="update-form">
+            <form action="/member/updateInfo" method="POST" id="updateUserNameForm">
+                <div class="section">
+                    <h4 class="section-header">사용자명 변경</h4>
+                    <table class="form-table">
+                        <tr>
+                            <th><label for="userName">새 사용자명</label></th>
+                            <td>
+                                <input type="text" id="userName" name="userName" class="form-control"
+                                       th:value="${member.userName}" required/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="button-group">
+                        <button type="submit" name="updateType" value="name" class="submit-btn">변경하기</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
 
-        <!-- 비밀번호 수정 폼 -->
-        <form action="/member/updateInfo" method="POST" id="updatePasswordForm">
-            <div class="section">
-                <h4 class="section-header">비밀번호 변경</h4>
-                <table class="form-table">
-                    <tr>
-                        <th><label for="currentPassword">현재 비밀번호</label></th>
-                        <td>
-                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" placeholder="현재 비밀번호를 입력하세요." required/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><label for="newPassword">새 비밀번호</label></th>
-                        <td>
-                            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="새 비밀번호를 입력하세요." required />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><label for="confirmNewPassword">새 비밀번호 확인</label></th>
-                        <td>
-                            <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control" placeholder="새 비밀번호를 다시 입력하세요." required />
-                            <span class="pw-match-status" id="pwMatchStatus"></span>
-                        </td>
-                    </tr>
-                </table>
-                <div class="button-group">
-                    <button type="submit" name="updateType" value="password" class="submit-btn">변경하기</button>
+            <!-- 비밀번호 수정 폼 -->
+            <form action="/member/updateInfo" method="POST" id="updatePasswordForm">
+                <div class="section">
+                    <h4 class="section-header">비밀번호 변경</h4>
+                    <table class="form-table">
+                        <tr>
+                            <th><label for="currentPassword">현재 비밀번호</label></th>
+                            <td>
+                                <input type="password" id="currentPassword" name="currentPassword" class="form-control"
+                                       placeholder="현재 비밀번호를 입력하세요." required/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="newPassword">새 비밀번호</label></th>
+                            <td>
+                                <input type="password" id="newPassword" name="newPassword" class="form-control"
+                                       placeholder="새 비밀번호를 입력하세요." required/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="confirmNewPassword">새 비밀번호 확인</label></th>
+                            <td>
+                                <input type="password" id="confirmNewPassword" name="confirmNewPassword"
+                                       class="form-control" placeholder="새 비밀번호를 다시 입력하세요." required/>
+                                <span class="pw-match-status" id="pwMatchStatus"></span>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="button-group">
+                        <button type="submit" name="updateType" value="password" class="submit-btn">변경하기</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
+    <!-- /.container -->
 </div>
-<!-- /.container -->
 
 <!-- Bootstrap core JavaScript-->
 <script src="/js/jquery.min.js"></script>
