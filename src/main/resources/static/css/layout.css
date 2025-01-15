@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Lufga:wght@400;600&family=SUIT:wght@400;600&display=swap');
+@charset "UTF-8";
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'SUIT', Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+}
+.sidebar {
+    position: fixed;
+    width: 305px;
+    background-color: #161616;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 10px;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    margin-top: 15px;
+}
+.logo img {
+    width: 120px;
+    height: auto;
+}
+.menu {
+    flex-grow: 1;
+    margin-top: 32px;
+}
+.menu-item {
+    color: #fff;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-family: 'SUIT', Arial, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+}
+.menu-item:hover,
+.menu-item.active {
+    color: #FFD028;
+    background-color: #3A3A3A;
+    border-radius: 8px;
+}
+.submenu {
+    margin-left: 18px;
+    display: none;
+}
+.submenu-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: 'SUIT', Arial, sans-serif;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 8px;
+}
+.submenu-item:hover {
+    background-color: #484848;
+    border-radius: 8px;
+}
+.submenu-item.active {
+    color: #FFD028;
+    background-color: #3A3A3A;
+    border-radius: 8px;
+}
+.menu-item.active + .submenu {
+    display: block;
+}
+.user-info-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 8px;
+    padding: 10px 15px;
+    background-color: #222222;
+    color: #fff;
+    border: 1px solid #303030;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.user-info-button:hover {
+    background-color: #303030;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.user-info div {
+    margin-left: 5px;
+}
+.user-info img {
+    width: 40px;
+    height: 40px;
+}
+.user-id {
+    font-family: 'SUIT', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+.user-role {
+    font-family: 'SUIT', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #A09F9F;
+}
+.logout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+.logout-icon:hover {
+    background-color: #303030;
+}
+.logout-icon img {
+    width: 40px;
+    height: 40px;
+}
+.content {
+    flex-grow: 1;
+    background-color: #F5F6FA;
+    margin-left: 14rem; /* sidebar width */
+}
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw - 14rem);
+    height: 100%;
+    padding: 36px 32px 36px 32px;
+}
+.title-area {
+    margin-bottom: 38px;
+}
+.main-title {
+    font-family: 'SUIT', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -2px;
+    color: #0D183F;
+    margin-right: 32px;
+}
+.sub-title {
+    font-family: 'SUIT', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: -2px;
+    color: #0D183F;
+}

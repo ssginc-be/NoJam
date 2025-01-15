@@ -3,16 +3,15 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-<head>
-    
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    
-    <title>SB Admin 2 - Dashboard</title>
-    
+<head layout:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- font cdn -->
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css" rel="stylesheet">
+    <style>@import url('https://fonts.googleapis.com/css2?family=Lufga:wght@400;600&family=SUIT:wght@400;600&display=swap');</style>
+
+    <link href="/css/layout.css" rel="stylesheet"/>
     <!-- Custom fonts for this template-->
     <link href="/css/all.css" rel="stylesheet" type="text/css">
     <link
@@ -21,312 +20,84 @@
     
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.css" rel="stylesheet">
-
+    
+    <script src="/js/layout.js"></script>
 </head>
+<body>
+<div class="sidebar">
+    <div>
+        <div class="logo" onclick="location.href='/chart/'" style="cursor:pointer;">
+            <img src="/img/nojam-logo.svg" alt="Logo">
+        </div>
+        <div class="menu">
+            <div class="menu-item active" onclick="location.href='/chart/'" style="cursor:pointer;">Dashboard</div>
+            
+            <div class="menu-item" onclick="toggleSubmenu(this, 'inventory-submenu')">재고관리</div>
+            <div class="submenu" id="inventory-submenu">
+                <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/stock/head/view/query/1?category=&value='">재고 조회</div>
+                <div th:if="${!#strings.equals(session.userRole, 'HEAD')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/stock/branch/view/query/1?category=&value='">재고 조회</div>
+            </div>
+            
+            <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'shipping-submenu')">출고관리</div>
+            <div class="submenu" id="shipping-submenu">
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/view/1'">출고 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/pending/1'">출고 승인/거절</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/indelivery/1'">출고 완료 처리</div>
+            </div>
+            
+            <div th:if="${#strings.equals(session.userRole, 'BMNG')} or ${#strings.equals(session.userRole, 'BWKR')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'incoming-submenu')">입고관리</div>
+            <div class="submenu" id="incoming-submenu">
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">입고 전체 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">입고 필터링 조회</div>
+            </div>
+            
+            <div th:if="${#strings.equals(session.userRole, 'BMNG')} or ${#strings.equals(session.userRole, 'BWKR')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'order-submenu')">발주관리</div>
+            <div class="submenu" id="order-submenu">
+                <div class="submenu-item" onclick="activateSubmenu(this)">발주 내역 조회</div>
+                <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href=''">발주 등록</div>
+                <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/order/upload'">발주 내역서 등록</div>
+                <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href=''">발주 취소</div>
+            </div>
+            
+            <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
+                 class="menu-item" onclick="toggleSubmenu(this, 'system-submenu')">지점 관리</div>
+            <div class="submenu" id="system-submenu">
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/map/'">지점 정보 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/member/manage-members'">지점 회원 관리</div>
+            </div>
 
-<body id="page-top">
-
-<!-- Page Wrapper -->
-<div id="wrapper">
-    
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-        
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/home/">
-            <div class="sidebar-brand-icon">
-                <!-- 아이콘 -->
-<!--                <i class="fas fa-laugh-wink"></i>-->
-                <img src="/img/sinsaegae.png" alt="아이콘자리" width="30px" height="30px">
-            </div>
-            <div class="sidebar-brand-text mx-3">NoJam</div>
-        </a>
-        
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
-        
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item active">
-            <a class="nav-link" href="/home/">
-                <!-- 아이콘 -->
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span></a>
-        </li>
-        
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-        
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Warehouse Management
+            <div class="menu-item" onclick="location.href='/member/mypage'">마이페이지</div>
         </div>
-        
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-               aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-boxes"></i>
-                <span>재고 관리</span>
-            </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">재고 관리</h6>
-                    <a class="collapse-item" href="">재고 전체 조회</a>
-                    <a class="collapse-item" href="">재고 필터링 조회</a>
-                    <a class="collapse-item" href="">재고 조정</a>
-                    <a class="collapse-item" href="">부족 재고 조회</a>
-                </div>
-            </div>
-        </li>
-        
-        <!-- Nav Item - Utilities Collapse Menu -->
-        <li th:if="${#strings.equals(session.role, 'head office')}" class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOutbound"
-               aria-expanded="true" aria-controls="collapseOutbound">
-                <i class="fas fa-fw fa-truck-fast"></i>
-                <span>출고 관리</span>
-            </a>
-            <div id="collapseOutbound" class="collapse" aria-labelledby="headingUtilities"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">출고 관리</h6>
-                    <a class="collapse-item" href="">출고 전체 조회</a>
-                    <a class="collapse-item" href="">출고 필터링 조회</a>
-                    <a class="collapse-item" href="">출고 등록</a>
-                    <a class="collapse-item" href="">출고 완료 처리</a>
-                </div>
-            </div>
-        </li>
-        
-        <!-- Nav Item - Utilities Collapse Menu -->
-        <li th:if="${#strings.equals(session.role, 'branch manager')} or ${#strings.equals(session.role, 'branch worker')}" class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInbound"
-               aria-expanded="true" aria-controls="collapseInbound">
-                <i class="fas fa-fw fa-truck-fast fa-flip-horizontal"></i>
-                <span>입고 관리</span>
-            </a>
-            <div id="collapseInbound" class="collapse" aria-labelledby="headingUtilities"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">입고 관리</h6>
-                    <a class="collapse-item" href="">입고 전체 조회</a>
-                    <a class="collapse-item" href="">입고 필터링 조회</a>
-                </div>
-            </div>
-        </li>
-        
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-        
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            System Management
-        </div>
-        
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li th:if="${#strings.equals(session.role, 'head office')}" class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSettings"
-               aria-expanded="true" aria-controls="collapseSettings">
-                <i class="fas fa-fw fa-gears"></i>
-                <span>시스템</span>
-            </a>
-            <div id="collapseSettings" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">시스템 관리</h6>
-                    <a class="collapse-item" href="">지점 정보 조회</a>
-                    <a class="collapse-item" href="">지점 정보 저장</a>
-                    <a class="collapse-item" href="">지점 회원 관리</a>
-                </div>
-            </div>
-        </li>
-        
-        <li th:if="${#strings.equals(session.role, 'branch manager')} or ${#strings.equals(session.role, 'branch worker')}" class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrders"
-               aria-expanded="true" aria-controls="collapseOrders">
-                <i class="fas fa-fw fa-gears"></i>
-                <span>발주</span>
-            </a>
-            <div id="collapseOrders" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">발주 관리</h6>
-                    <a th:if="${#strings.equals(session.role, 'branch manager')}" class="collapse-item" href="">발주 등록</a>
-                    <a th:if="${#strings.equals(session.role, 'branch manager')}" class="collapse-item" href="">발주 취소</a>
-                    <a class="collapse-item" href="">발주 내역 조회</a>
-                </div>
-            </div>
-        </li>
-        
-        <!-- Nav Item - Charts -->
-        <li th:if="${#strings.equals(session.role, 'head office')}" class="nav-item">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-file-signature"></i>
-                <span>사용 이력 관리</span></a>
-        </li>
-        
-<!--        &lt;!&ndash; Nav Item - Charts &ndash;&gt;-->
-<!--        <li class="nav-item">-->
-<!--            <a class="nav-link" href="charts.html">-->
-<!--                <i class="fas fa-fw fa-chart-area"></i>-->
-<!--                <span>Charts</span></a>-->
-<!--        </li>-->
-        
-        <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block">
-        
-        <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
-        
-        <!-- Sidebar Message -->
-        <!-- <div class="sidebar-card d-none d-lg-flex">
-            <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
-            <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
-            <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
-        </div> -->
-    
-    </ul>
-    <!-- End of Sidebar -->
-    
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-        
-        <!-- Topbar -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-            
-            <!-- Sidebar Toggle (Topbar) -->
-            <!-- 모바일 버전 사이드 바 여는 토글 버튼 -->
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                <i class="fa fa-bars"></i>
-            </button>
-            
-            <!-- Topbar Search -->
-<!--            <form-->
-<!--                    class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">-->
-<!--                <div class="input-group">-->
-<!--                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."-->
-<!--                           aria-label="Search" aria-describedby="basic-addon2">-->
-<!--                    <div class="input-group-append">-->
-<!--                        <button class="btn btn-primary" type="button">-->
-<!--                            <i class="fas fa-search fa-sm"></i>-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </form>-->
-            
-            <!-- Topbar Navbar -->
-            <ul class="navbar-nav ml-auto">
-                
-<!--                &lt;!&ndash; Nav Item - Search Dropdown (Visible Only XS) &ndash;&gt;-->
-<!--                &lt;!&ndash; 모바일 버전 검색 버튼 &ndash;&gt;-->
-<!--                <li class="nav-item dropdown no-arrow d-sm-none">-->
-<!--                    <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"-->
-<!--                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--                        <i class="fas fa-search fa-fw"></i>-->
-<!--                    </a>-->
-<!--                    &lt;!&ndash; Dropdown - Messages &ndash;&gt;-->
-<!--                    <div class="dropdown-menu dropdown-menu-right p-3 shadow animated&#45;&#45;grow-in"-->
-<!--                         aria-labelledby="searchDropdown">-->
-<!--                        <form class="form-inline mr-auto w-100 navbar-search">-->
-<!--                            <div class="input-group">-->
-<!--                                <input type="text" class="form-control bg-light border-0 small"-->
-<!--                                       placeholder="Search for..." aria-label="Search"-->
-<!--                                       aria-describedby="basic-addon2">-->
-<!--                                <div class="input-group-append">-->
-<!--                                    <button class="btn btn-primary" type="button">-->
-<!--                                        <i class="fas fa-search fa-sm"></i>-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                    </div>-->
-<!--                </li>-->
-<!--                -->
-<!--                <div class="topbar-divider d-none d-sm-block"></div>-->
-                
-                <!-- Nav Item - User Information -->
-                <li class="nav-item dropdown no-arrow">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">이름 들어갈 자리</span>
-                        <img class="img-profile rounded-circle"
-                             src="/img/undraw_profile.svg">
-                    </a>
-                    <!-- Dropdown - User Information -->
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                         aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Profile
-                        </a>
-<!--                            <a class="dropdown-item" href="#">-->
-<!--                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>-->
-<!--                                Settings-->
-<!--                            </a>-->
-<!--                            <a class="dropdown-item" href="#">-->
-<!--                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>-->
-<!--                                Activity Log-->
-<!--                            </a>-->
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/member/logout" data-toggle="modal" data-target="#logoutModal">
-                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Logout
-                        </a>
-                    </div>
-                </li>
-            
-            </ul>
-        
-        </nav>
-        <!-- End of Topbar -->
-        
-        <!-- Begin Page Content -->
-        <!-- 화면 중앙 컨텐츠 부분 -->
-        <div class="container-fluid" layout:fragment="content">
-        </div>
-        <!-- /.container-fluid -->
-        
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white" layout:fragment="footer">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
-                </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
-    
     </div>
-    <!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+    <div>
+        <div class="user-info-button">
+            <div class="user-info">
+                <img th:if="${#strings.equals(session.userRole, 'HEAD')}" src="/img/user-profile.png" alt="User">
+                <img th:if="!${#strings.equals(session.userRole, 'HEAD')}" src="/img/user-profile-2.png" alt="User">
+                <div>
+                    <div class="user-id">[[${session.userName}]]</div>
+                    <div th:if="${#strings.equals(session.userRole, 'HEAD')}" class="user-role">본사</div>
+                    <div th:if="${#strings.equals(session.userRole, 'BMNG')}" class="user-role">지점장</div>
+                    <div th:if="${#strings.equals(session.userRole, 'BWKR')}" class="user-role">지점직원</div>
+                </div>
             </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="/member/logout">Logout</a>
+            <div class="logout-icon" onclick="logout(event)">
+                <img src="/img/logout-icon.svg" alt="Logout">
             </div>
         </div>
     </div>
 </div>
+<div class="content" layout:fragment="content">
 
+</div>
 <!-- Bootstrap core JavaScript-->
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
@@ -340,14 +111,8 @@
 <!-- Page level plugins -->
 <script th:src="@{/js/Chart.min.js}"></script>
 
-<!-- Page level custom scripts -->
-<script th:src="@{/js/demo/chart-area-demo.js}"></script>
-<script th:src="@{/js/demo/chart-pie-demo.js}"></script>
-
 <th:block layout:fragment="script">
-    <!--        자바 스크립트 들어갈 부분~-->
+    <!-- 자바 스크립트 들어갈 부분~-->
 </th:block>
-
 </body>
-
 </html>

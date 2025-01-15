@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.member.mapper.MemberMapper">
+    <!--  MemberMapper.java와 연결이 됨.  -->
+
+    <!-- 회원가입 -->
+    <insert id="insertMember"
+            parameterType="com.ssginc.nojam.member.vo.MemberVO">
+        INSERT INTO member (user_id, user_pw, user_name, user_email, user_role, last_modified_at, branch_id)
+        VALUES (#{userId}, #{userPw}, #{userName}, #{userEmail}, 'GUEST', NOW(), NULL)
+    </insert>
+
+    <!-- 회원 정보 찾기(ID중복 체크) -->
+    <select id="selectMemberById"
+            parameterType="string"
+            resultType="com.ssginc.nojam.member.vo.MemberVO">
+        SELECT * FROM member
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 비밀번호 찾기 및 수정 -->
+    <update id="updatePasswordByEmail" parameterType="map">
+        UPDATE member
+        SET user_pw = #{userPw}, last_modified_at = NOW()
+        WHERE user_email = #{userEmail}
+    </update>
+
+    <!-- 이메일로 회원 조회 -->
+    <select id="selectMemberByEmail" parameterType="string" resultType="com.ssginc.nojam.member.vo.MemberVO">
+        SELECT * FROM member
+        WHERE user_email = #{userEmail}
+    </select>
+
+    <!-- 회원 정보 업데이트 -->
+    <!-- 사용자명 업데이트 -->
+    <update id="updateUserName" parameterType="com.ssginc.nojam.member.vo.MemberVO">
+        UPDATE member
+        SET user_name = #{userName},
+            last_modified_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 비밀번호 업데이트 -->
+    <update id="updatePassword" parameterType="map">
+        UPDATE member
+        SET user_pw = #{userPw},
+            last_modified_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 모든 BMNG, BWKR, GUEST 역할의 회원을 조회 (지점 회원 관리) -->
+    <select id="selectAllMembersWithRoles" resultType="com.ssginc.nojam.member.vo.MemberVO">
+        SELECT
+            m.user_id,
+            m.user_name,
+            m.user_email,
+            m.branch_id,
+            m.user_role
+        FROM member m
+        WHERE m.user_role IN ('BMNG', 'BWKR', 'GUEST')
+    </select>
+
+    <!-- 특정 회원의 user_role을 업데이트 (지점 회원 관리) -->
+    <update id="updateUserRole" parameterType="map">
+        UPDATE member
+        SET user_role = #{userRole},
+            last_modified_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

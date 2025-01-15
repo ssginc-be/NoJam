@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+button {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.wrapper {
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.wrapper .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.wrapper .nav .current-date {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.wrapper .nav button {
+    width: 38px;
+    height: 38px;
+    font-size: 30px;
+    color: #878787;
+}
+
+.calendar ul {
+    display: flex;
+    list-style: none;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+.calendar .weeks li {
+    font-weight: 500;
+}
+
+.calendar .days {
+    margin-bottom: 20px;
+}
+
+.calendar ul li {
+    width: calc(100% / 7);
+    position: relative;
+}
+
+.calendar .days li {
+    z-index: 1;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.days li.inactive {
+    color: #aaa;
+}
+
+.days li.active {
+    color: #fff;
+}
+
+.calendar .days li::before {
+    position: absolute;
+    content: '';
+    height: 40px;
+    width: 40px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+/*.days li:hover::before {*/
+/*    background: #f2f2f2;*/
+/*}*/
+
+/*.days li.active::before {*/
+/*    background: #008aff;*/
+/*}*/
+
+.modal-dialog-centered .modal-content {
+    border-radius: 10px;
+}
+
+.days li.selected {
+    background-color: #f3bc2e;
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.days li:hover {
+    background-color: #d4d4d4;
+    border-radius: 50%;
+    cursor: pointer;
+}

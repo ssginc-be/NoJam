@@ -38,3 +38,6 @@ out/
 
 ### logs directory ###
 logs/
+
+# SMTP
+/src/main/resources/confidential.properties

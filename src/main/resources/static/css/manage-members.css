@@ -1,0 +1,156 @@
+/* manage-members.css */
+
+body {
+    font-family: 'SUIT', sans-serif;
+    background-color: #F5F6FA;
+    color: #0D183F;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #F5F6FA;
+    color: #0D183F;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.section-header {
+    color: #0D183F;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.table-container {
+    max-height: 500px;
+    overflow-y: auto;
+    background-color: #F5F6FA;
+    border: 1px solid #1E1E1E;
+    border-radius: 5px;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table th, .info-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #A09F9F;
+}
+
+.info-table th {
+    background-color: #0D183F;
+    color: #FFFFFF;
+    position: sticky;
+    top: 0;
+}
+
+.info-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.role-select {
+    padding: 5px;
+    background-color: #FFD028;
+    color: #0D183F;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.role-select option {
+    background-color: #1E1E1E;
+    color: #0D183F;
+}
+
+.selectRole{
+    margin-right: 20px;
+}
+
+.changeBtn {
+    border-radius: 8px;
+    border: 1px solid #c4c4c4;
+    background: #fff;
+    padding: 2px 10px;
+}
+
+.success-message, .error-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.success-message {
+    background-color: #0D183F;
+    color: #FFD028;
+}
+
+.error-message {
+    background-color: #A09F9F;
+    color: #0D183F;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #1E1E1E;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #A09F9F;
+    width: 300px; /* Could be more or less, depending on screen size */
+    border-radius: 5px;
+    color: #FFD028;
+    text-align: center;
+}
+
+.close-button {
+    color: #FFD028;
+    float: right;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #A09F9F;
+    text-decoration: none;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#confirmButton {
+    background-color: #FFD028;
+    color: #0D183F;
+}
+
+#cancelButton {
+    background-color: #A09F9F;
+    color: #0D183F;
+}

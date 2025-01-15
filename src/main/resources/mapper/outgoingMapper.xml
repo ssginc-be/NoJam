@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.outgoing.mapper.OutgoingMapper">
+
+    <!-- 모든 출고 내역 개수 조회 -->
+    <select id="countAllOutgoings"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM outgoing
+    </select>
+
+    <!-- 모든 출고 내역 조회 -->
+    <select id="get50Outgoings"
+            resultType="com.ssginc.nojam.outgoing.dto.OutgoingViewDTO">
+        SELECT * FROM (
+            SELECT outgoing_id, order_id, `name`, branch_name, `order`.quantity, outgoing.out_start_time, outgoing.out_end_time, outgoing.status
+            FROM outgoing
+            JOIN `order` USING (order_id)
+            JOIN item USING (item_id)
+            JOIN branch USING(branch_id)
+        ) res
+        ORDER BY outgoing_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+    <!-- 모든 출고대기 개수 조회 -->
+    <select id="countAllPendingOutgoings"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM `order`
+        JOIN item USING(item_id)
+        JOIN branch USING(branch_id)
+        WHERE order.status = '출고대기'
+    </select>
+
+    <!-- 모든 출고중 개수 조회 -->
+    <select id="countAllIndeliveryOutgoings"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM `order`
+                 JOIN item USING(item_id)
+                 JOIN branch USING(branch_id)
+        WHERE order.status = '출고중'
+    </select>
+
+    <!-- 모든 출고대기 조회 -->
+    <select id="get50PendingOutgoings"
+            resultType="com.ssginc.nojam.outgoing.dto.OutgoingViewDTO">
+        SELECT *
+        FROM `order`
+        JOIN item USING(item_id)
+        JOIN head_stock USING(item_id)
+        JOIN branch USING(branch_id)
+        WHERE order.status = '출고대기'
+        ORDER BY order_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+    <update id="confirm">
+        UPDATE `order`
+        SET status = '출고중', out_start_time = #{outStartTime}
+        WHERE order_id = ${orderId}
+    </update>
+
+    <update id="reject">
+        UPDATE `order`
+        SET status = '출고거절'
+        WHERE order_id = ${orderId}
+    </update>
+
+    <!-- 출고 승인에 따른 본사 재고 차감 -->
+    <!-- 여따 쓰는거 부적절하긴 한데 좀 봐주십쇼 바빠요ㅜ -->
+    <update id="decHeadStock">
+        UPDATE head_stock
+        SET stock = stock - ${decValue}
+        WHERE item_id = ${itemId}
+    </update>
+
+    <!-- 출고 내역 신규 등록 -->
+    <insert id="insertNewOutgoing">
+        INSERT INTO outgoing(order_id, quantity, committer, out_start_time)
+        VALUES
+            (${orderId}, ${quantity}, #{userId}, #{outStartTime})
+    </insert>
+
+
+    <!-- '출고중'인 출고 내역만 조회 -->
+    <select id="get50IndeliveryOutgoings"
+            resultType="com.ssginc.nojam.outgoing.dto.OutgoingViewDTO">
+        SELECT * FROM (
+            SELECT outgoing_id, order_id, `name`, branch_name, `order`.quantity, order_time, outgoing.out_start_time, outgoing.status
+            FROM outgoing
+            JOIN `order` USING (order_id)
+            JOIN item USING (item_id)
+            JOIN branch USING(branch_id)
+        ) res
+        WHERE res.status = '출고중'
+        ORDER BY outgoing_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+    <!-- 출고 완료 처리 -->
+    <update id="markDone">
+        UPDATE outgoing
+        SET status = '출고완료', out_end_time = #{markTime}
+        WHERE order_id = ${orderId};
+
+        UPDATE `order`
+        SET status = '입고완료', in_end_time = #{markTime}
+        WHERE order_id = ${orderId};
+
+        INSERT INTO incoming(incoming_id, item_id, branch_id, quantity, in_time)
+        VALUES
+            (#{incomingId}, ${itemId}, #{branchId}, ${quantity}, #{markTime})
+    </update>
+
+    <!-- 출고완료(=발주 기준으로 '입고완료')에 따른 해당 지점의 재고 추가 -->
+    <!-- 추후 incomingMapper로 옮겨야 함 -->
+    <update id="incBranchStock">
+        UPDATE branch_stock
+        SET stock = stock + ${incValue}
+        WHERE item_id = ${itemId}
+    </update>
+
+</mapper>

@@ -1,0 +1,398 @@
+/* reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 폰트 */
+body {
+    font-family: "SUIT", sans-serif;
+    background-color: #F5F6FA;
+    display: flex;
+}
+
+/* 전체 래퍼 */
+.signup-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    background-color: #FFFFFF;
+    zoom: 0.8; /* 화면 전체를 80% 크기로 축소 */
+}
+
+/* 회원 가입 타이틀 */
+.signup-header {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0D183F;
+    text-align: center;
+}
+
+/* 서버측 에러메시지 */
+.error-message {
+    margin-top: 10px;
+    color: red;
+    font-size: 1rem;
+    text-align: center;
+}
+
+/* 콘텐츠 영역: 폼과 이미지 */
+.signup-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 1600px;
+    margin: auto auto;
+    gap: 40px;
+    flex-wrap: nowrap; /* 줄바꿈 방지 */
+    align-items: stretch;
+}
+
+/* 회원가입 폼 컨테이너 */
+.signup-form-container {
+    flex: 0 0 600px; /* 폼의 너비 고정 */
+    display: flex;
+    margin-right: 100px;
+    margin-left: 100px;
+    flex-direction: column;
+    justify-content: center; /* 세로 중앙 정렬 (필요시) */
+}
+
+/* 회원가입 폼 */
+.signup-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 공통 라벨 스타일 */
+.signup-form label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0D183F;
+}
+
+/* 공통 입력 그룹 */
+.input-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center; /* 높이 동일하게, vertical align */
+    justify-content: center;
+}
+
+/* 공통 입력 필드 */
+.form-control {
+    flex: 1;
+    padding: 15px;
+    font-size: 1rem;
+    border: 2px solid #F3F3F3;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    outline: none;
+    transition: border-color 0.3s ease;
+    height: 50px; /* 동일한 높이 */
+}
+
+/* .button-status-container의 크기를 '인증하기' 버튼과 동일하게 설정 */
+.button-status-container {
+    position: relative;
+    width: 150px; /* '인증하기' 버튼과 동일한 너비 */
+    height: 50px; /* '인증하기' 버튼과 동일한 높이 */
+}
+
+/* .button-status-container 내부의 버튼과 상태 메시지를 동일한 위치에 겹치게 배치 */
+.button-status-container .check-btn,
+.button-status-container .id-check-status,
+.button-status-container .email-auth-status {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 상태 메시지의 초기 표시 상태를 숨김 */
+.button-status-container .id-check-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden; /* 초기 상태는 숨김 */
+}
+
+/* 버튼이 숨겨질 때 상태 메시지를 표시 */
+.button-status-container .check-btn.hidden + .id-check-status {
+    visibility: visible;
+}
+
+/* 버튼을 숨기기 위한 클래스 */
+.hidden {
+    display: none;
+}
+
+/* 포커스 시 테두리 색상 변경 */
+.form-control:focus {
+    border-color: #0D183F;
+}
+
+/* 버튼 */
+.check-btn {
+    flex: 0 0 150px; /* 버튼과 상태 메시지의 동일한 너비 */
+    padding: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #161616;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 50px; /* 동일한 높이 */
+    white-space: nowrap;
+}
+
+.check-btn:hover {
+    background-color: #0D183F;
+}
+
+/* 이메일 선택 박스 */
+.email-select {
+    flex: 0 0 150px; /* 버튼과 동일한 너비 */
+    padding: 0 15px;
+    font-size: 1rem;
+    border: 2px solid #F3F3F3;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    outline: none;
+    transition: border-color 0.3s ease;
+    height: 50px; /* 동일한 높이 */
+}
+
+.email-select:focus {
+    border-color: #0D183F;
+}
+
+/* 상태 메시지 및 플레이스홀더 */
+.id-check-status, .pw-match-status, .status-placeholder, .email-auth-status {
+    flex: 0 0 150px; /* 버튼과 동일한 너비 */
+    visibility: hidden; /* 초기 상태는 숨김 */
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex; /* 항상 공간을 차지하도록 함 */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* 기존 gap: 20px을 10px으로 수정 */
+    width: 100%; /* 버튼 그룹의 너비를 100%로 설정 */
+    margin-top: 20px; /* 버튼 그룹 상단 여백 추가 */
+}
+
+.submit-btn, .cancel-btn {
+    /* 기존 flex: 1; 제거 */
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border 0.3s ease;
+    height: 60px; /* 높이 조정 */
+}
+
+/* 취소 버튼을 고정 크기로 설정 */
+.cancel-btn {
+    width: 150px; /* '인증하기' 버튼과 동일한 너비 */
+    /*height: 50px;*/
+    background-color: #FFFFFF;
+    color: #0D183F;
+    border: 2px solid #0D183F;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: #F3F3F3;
+}
+
+/* 가입하기 버튼을 남은 공간을 채우도록 설정 */
+.submit-btn {
+    flex: 1; /* 남은 공간을 모두 채우도록 설정 */
+    /*height: 50px;*/
+    background-color: #0D183F;
+    color: #FFFFFF;
+    border: 2px solid #F3F3F3;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #161616;
+}
+
+/* 이미지 컨테이너 */
+.signup-image-container {
+    flex: 1; /* 남은 공간 모두 사용 */
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+}
+
+/* 오른쪽 이미지 영역 */
+.signup-image-area {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 108.89%; /* 922:1004 비율 */
+    /*padding-bottom: 56.25%; !* 16:9 비율 *!*/
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.signup-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    /* background-color: rgba(0, 0, 0, 0.5); */ /* 배경 제거 */
+    /* padding: 10px 15px; */ /* 패딩 제거 */
+    /* border-radius: 4px; */ /* 테두리 제거 */
+    /* max-width: calc(100% - 40px); */ /* 최대 너비 제거 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+    .signup-content {
+        max-width: 1000px; /* 중간 크기 화면을 위한 조정 */
+    }
+
+    .signup-image-area {
+        max-width: 500px; /* 이미지 영역 조정 */
+        padding-bottom: 56.25%; /* 비율 유지 */
+    }
+}
+
+@media (max-width: 992px) {
+    .signup-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .signup-form-container, .signup-image-container {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .signup-form label {
+        font-size: 0.95rem;
+    }
+
+    .form-control, .email-select, .check-btn {
+        font-size: 0.95rem;
+        padding: 12px;
+        height: 45px; /* 높이 조정 */
+    }
+
+    .check-btn {
+        padding: 0 10px;
+        flex: 0 0 130px; /* 버튼 너비 조정 */
+    }
+
+    .email-select {
+        flex: 0 0 130px; /* 선택 박스 너비 조정 */
+    }
+
+    .id-check-status, .pw-match-status, .status-placeholder {
+        flex: 0 0 130px; /* 상태 메시지 너비 조정 */
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px; /* 버튼 간격 10px */
+    }
+
+    .submit-btn, .cancel-btn {
+        font-size: 0.95rem;
+        padding: 12px;
+        height: 45px; /* 높이 조정 */
+    }
+
+    .image-overlay-text {
+        font-size: 1.2rem;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .signup-header {
+        font-size: 1.8rem;
+    }
+
+    .signup-form label {
+        font-size: 0.9rem;
+    }
+
+    .form-control, .email-select, .check-btn {
+        font-size: 0.9rem;
+        padding: 10px;
+        height: 40px; /* 높이 조정 */
+    }
+
+    .check-btn {
+        padding: 0 8px;
+        flex: 0 0 100px; /* 버튼 너비 조정 */
+    }
+
+    .email-select {
+        flex: 0 0 100px; /* 선택 박스 너비 조정 */
+    }
+
+    .id-check-status, .pw-match-status, .status-placeholder {
+        flex: 0 0 100px; /* 상태 메시지 너비 조정 */
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 8px; /* 작은 화면에서는 gap을 더 줄임 */
+    }
+
+    .submit-btn, .cancel-btn {
+        font-size: 0.9rem;
+        padding: 10px;
+        height: 40px; /* 높이 조정 */
+    }
+
+    .image-overlay-text {
+        font-size: 1rem;
+        padding: 6px 10px;
+    }
+}

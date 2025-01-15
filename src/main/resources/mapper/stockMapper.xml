@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.stock.mapper.StockMapper">
+
+    <!-- 전체 상품 조회 -->
+    <select id="getAllItem"
+            resultType="com.ssginc.nojam.crawl.vo.ItemVO">
+        SELECT *
+        FROM item
+    </select>
+
+    <!-- 본사 재고 등록 -->
+    <insert id="insertHeadStockList"
+            parameterType="java.util.List">
+        INSERT INTO head_stock(stock_id, item_id, stock, last_modified_at)
+        VALUES
+        <foreach collection="list" item="hs" separator=",">
+            (#{hs.stockId}, ${hs.itemId}, ${hs.stock}, #{hs.lastModifiedAt})
+        </foreach>
+    </insert>
+
+    <!-- 지점 재고 등록 -->
+    <insert id="insertBranchStockList"
+            parameterType="java.util.List">
+        INSERT INTO branch_stock(stock_id, branch_id, item_id, stock, last_modified_at)
+        VALUES
+        <foreach collection="list" item="bs" separator=",">
+            (#{bs.stockId}, #{bs.branchId}, ${bs.itemId}, ${bs.stock}, #{bs.lastModifiedAt})
+        </foreach>
+    </insert>
+
+
+    <!-- 본사 재고 -->
+    <!-- 본사 재고 50개 paging 조회 -->
+    <select id="get50HeadStock"
+            resultType="com.ssginc.nojam.stock.dto.HeadStockViewDTO"
+            parameterType="int">
+        SELECT * FROM (
+            SELECT hs.stock_id, hs.item_id, it.name, it.category1, it.category2, it.price, hs.stock, hs.last_modified_at FROM head_stock hs
+            JOIN item it USING(item_id)
+        ) res
+        ORDER BY stock_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+    <!-- 본사 재고 개수 조회 -->
+    <select id="countAllHeadStock"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM head_stock
+    </select>
+
+    <!-- 본사 재고 필터링 후 개수 조회 -->
+    <select id="countFilteredHeadStock"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM head_stock
+        JOIN item USING(item_id)
+        WHERE ${category} LIKE '%${value}%'
+    </select>
+
+    <!-- 본사 재고 필터링 후 조회 -->
+    <select id="get50FilteredHeadStock"
+            resultType="com.ssginc.nojam.stock.dto.HeadStockViewDTO">
+        SELECT *
+        FROM head_stock
+        JOIN item USING(item_id)
+        WHERE ${category} LIKE '%${value}%'
+        ORDER BY stock_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+
+    <!-- 지점 재고 -->
+    <!-- 지점 재고 50개 paging 조회 -->
+    <select id="get50BranchStock"
+            resultType="com.ssginc.nojam.stock.dto.BranchStockViewDTO"
+            parameterType="int">
+        SELECT * FROM (
+            SELECT bs.stock_id, bs.branch_id, bs.item_id, it.name, it.category1, it.category2, it.price, bs.stock, bs.last_modified_at FROM branch_stock bs
+            JOIN item it USING(item_id)
+        ) res
+        WHERE branch_id = #{branchId}
+        ORDER BY stock_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+    <!-- 지점 재고 개수 조회 -->
+    <select id="countAllBranchStock"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM branch_stock
+        WHERE branch_id = #{branchId}
+    </select>
+
+    <!-- 지점 재고 필터링 후 개수 조회 -->
+    <select id="countFilteredBranchStock"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM branch_stock
+        JOIN item USING(item_id)
+        WHERE branch_id = #{branchId} AND ${category} LIKE '%${value}%'
+    </select>
+
+    <!-- 지점 재고 필터링 후 조회 -->
+    <select id="get50FilteredBranchStock"
+            resultType="com.ssginc.nojam.stock.dto.BranchStockViewDTO">
+        SELECT *
+        FROM branch_stock
+        JOIN item USING(item_id)
+        WHERE branch_id = #{branchId} AND ${category} LIKE '%${value}%'
+        ORDER BY stock_id ASC
+        LIMIT ${startIdx}, 50
+    </select>
+
+    <!-- 상품ID로 본사 재고 조회 -->
+    <select id="getHeadStockByItemId"
+            resultType="int">
+        SELECT stock
+        FROM head_stock
+        WHERE item_id = ${itemId}
+    </select>
+
+</mapper>

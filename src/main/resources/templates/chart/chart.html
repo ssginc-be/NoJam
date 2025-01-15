@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>대시보드</title>
+    <link rel="stylesheet" href="/css/calendar.css">
+</head>
+
+<body>
+<!-- Begin Page Content -->
+<!-- 화면 중앙 컨텐츠 부분 -->
+<div class="content" layout:fragment="content">
+    <div class="wrapper">
+        <!-- Page Heading -->
+        <div class="title-area">
+            <span class="main-title">대시보드</span>
+            <span th:if="${#strings.equals(session.userRole, 'HEAD')}" class="sub-title">판매량/판매금액/출고상태</span>
+            <span th:if="!${#strings.equals(session.userRole, 'HEAD')}" class="sub-title">판매량/판매금액</span>
+        </div>
+
+        <!-- Content Row -->
+        <div class="row">
+
+            <!-- Bar Chart -->
+            <div class="col-xl-12 col-lg-12">
+                <div class="card shadow mb-4">
+                    <!-- Card Header -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">카테고리 별 판매량</h6>
+                        <select th:if="${#strings.equals(session.userRole, 'HEAD')}" id="selectedBranch"
+                                onchange="changeSelect()">
+                            <option value="" selected>전체</option>
+                            <option th:each="branch : ${branches}"
+                                    th:value="${branch.branchId}"
+                                    th:text="${branch.branchName}">
+                            </option>
+                        </select>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-8 col-lg-8 col-md-8 mb-8">
+                <div class="card shadow mb-4">
+                    <!-- Card Header -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">입고 대비 판매량</h6>
+                        <select th:if="${#strings.equals(session.userRole, 'HEAD')}" id="selectedBranch2"
+                                onchange="changeSelect2()">
+                            <option value="" selected>전체</option>
+                            <option th:each="branch : ${branches}"
+                                    th:value="${branch.branchId}"
+                                    th:text="${branch.branchName}">
+                            </option>
+                        </select>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="areaChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-md-4 mb-4">
+
+                <div class="card border-left-primary shadow py-2" style="height: 30% !important;">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    금일 총 판매 금액
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="daily"></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 5% !important"></div>
+
+                <div class="card border-left-success shadow py-2" style="height: 30% !important;">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    이번 달 총 판매 금액
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="monthly"></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 5% !important"></div>
+
+                <div class="card border-left-info shadow py-2" style="height: 30% !important;">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    올해 총 판매 금액
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="yearly"></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-8 col-lg-8">
+                <div class="card shadow mb-4">
+                    <!-- Card Header -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">일자별 판매량</h6>
+                        <div>
+                            <button class="btn btn-link" data-toggle="modal" data-target="#datePickerModal"
+                                    style="text-decoration: none; color: inherit;">날짜 선택
+                            </button>
+                        </div>
+
+                        <div class="modal fade" id="datePickerModal" tabindex="-1" role="dialog"
+                             aria-labelledby="datePickerModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="datePickerModalLabel" onclick="renderCalendar()">날짜
+                                            선택</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="wrapper">
+                                            <header>
+                                                <div class="nav">
+                                                    <button class="material-icons" id="prev"> <</button>
+                                                    <p class="current-date"></p>
+                                                    <button class="material-icons" id="next"> ></button>
+                                                </div>
+                                            </header>
+                                            <div class="calendar">
+                                                <ul class="weeks">
+                                                    <li>Sun</li>
+                                                    <li>Mon</li>
+                                                    <li>Tue</li>
+                                                    <li>Wed</li>
+                                                    <li>Thu</li>
+                                                    <li>Fri</li>
+                                                    <li>Sat</li>
+                                                </ul>
+                                                <ul class="days"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                        <button type="button" class="btn btn-primary" onclick="applyDate()">적용</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <select th:if="${#strings.equals(session.userRole, 'HEAD')}" id="selectedBranch3">
+                            <option value="" selected>전체</option>
+                            <option th:each="branch : ${branches}"
+                                    th:value="${branch.branchId}"
+                                    th:text="${branch.branchName}">
+                            </option>
+                        </select>
+
+                        <button class="btn btn-warning" onclick="applyDateAndBranch()">조회</button>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#strings.equals(session.userRole, 'HEAD')}" class="col-xl-4 col-lg-4">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">출고 상태</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-primary"></i> 출고중
+                        </span>
+                            <span class="mr-2">
+                            <i class="fas fa-circle text-success"></i> 출고완료
+                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <!-- axios 비동기 통신용 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Chart js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        <!-- 외부 js파일로 session의 값을 전달하기 위해 작성 -->
+        let userRole = [[${session.userRole}]];
+        let branchId = [[${session.branchId}]];
+    </script>
+    <script src="/js/modal.js"></script>
+    <script src="/js/card.js"></script>
+
+    <script src="/js/demo/pieChart.js"></script>
+    <script src="/js/demo/barChart.js"></script>
+    <script src="/js/demo/areaChart.js"></script>
+    <script src="/js/demo/lineChart.js"></script>
+</th:block>
+</body>
+</html>

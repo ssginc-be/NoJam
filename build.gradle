@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'war'
-    id 'org.springframework.boot' version '3.4.1'
+    id 'org.springframework.boot' version '3.0.2'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -25,6 +25,23 @@ repositories {
 }
 
 dependencies {
+    // OpenCSV CSVReader
+    implementation 'com.opencsv:opencsv:5.9'
+
+    // Jsoup
+    implementation 'org.jsoup:jsoup:1.18.1'
+
+    // DB 연결
+    implementation 'mysql:mysql-connector-java:8.0.33' // 최신 버전 사용
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+
+    //************************************************************************
+    //  spring security
+    //************************************************************************
+    // password암호화
+    // Spring Security의 Crypto 모듈
+    implementation 'org.springframework.security:spring-security-crypto:6.0.0'
+
     //************************************************************************
     //  template engine-thymeleaf
     //************************************************************************
@@ -65,13 +82,18 @@ dependencies {
     // Spring Security의 Crypto 모듈
     implementation 'org.springframework.security:spring-security-crypto:6.0.0'
 
+    //************************************************************************
+    //  smtp
+    //************************************************************************
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 
     //************************************************************************
     //  db-mybatis-mysql-hikari
     //************************************************************************
     // db연결
     implementation 'mysql:mysql-connector-java:8.0.33' // 최신 버전 사용
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
     // vo <--> json
     //implementation 'org.modelmapper:modelmapper:3.1.0'
     // validation

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - SignUp</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/css/all.css" rel="stylesheet" type="text/css">
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/css/sb-admin-2.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-gradient-primary">
+
+<div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-register-image"
+                     style="align-items:center !important; display: flex !important; justify-content:center !important;">
+                    <img src="/img/register.png" alt="이미지 자리" width="191" height="187">
+                </div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                        </div>
+
+                        <!-- error 메시지 표시 -->
+                        <div th:if="${error}" class="text-center text-danger mb-3">
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <!-- signup form -->
+                        <form action="/member/signup2" method="POST" id="signUpForm" class="user">
+                            <!-- ID 중복체크 부분 -->
+                            <div class="form-group row">
+                                <!-- 6칸: 입력 필드 -->
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-user" id="inputId"
+                                           name="userId" placeholder="ID">
+                                </div>
+                                <!-- 4칸: 중복 체크 결과 -->
+                                <div class="col-sm-4">
+                                    <span id="idCheckResult" style="font-size: 0.85rem; display: block;"></span>
+                                </div>
+                                <!-- 2칸: 버튼 -->
+                                <div class="col-sm-2">
+                                    <button type="button" class="btn btn-primary btn-user btn-block" id="checkIdBtn">
+                                        Check
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Password, repeat password -->
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input type="password" class="form-control form-control-user"
+                                           id="inputPassword" name="userPw" placeholder="Password">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="password" class="form-control form-control-user"
+                                           id="repeatPassword" placeholder="Repeat Password">
+                                </div>
+                            </div>
+
+                            <!-- Name -->
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user" id="inputName"
+                                       name="userName" placeholder="Name">
+                            </div>
+
+                            <!-- Email & 인증 버튼 -->
+                            <div class="form-group row">
+                                <div class="col-sm-8 mb-3 mb-sm-0">
+                                    <input type="email" class="form-control form-control-user" id="inputEmail"
+                                           name="userEmail" placeholder="Email Address">
+                                </div>
+                                <div class="col-sm-4">
+                                    <button type="button" class="btn btn-info btn-user btn-block" id="sendEmailBtn">
+                                        인증 메일 발송
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 인증코드 입력 -->
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user" id="emailAuthCodeInput"
+                                       name="emailAuthCodeInput" placeholder="이메일로 전송된 인증코드 입력">
+                            </div>
+
+                            <!-- Register Account 버튼 -->
+                            <button type="button" id="submitBtn" class="btn btn-primary btn-user btn-block">
+                                Register Account
+                            </button>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <a class="small" href="/">Already have an account? Login!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- JS -->
+
+<!-- Bootstrap core JavaScript-->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="/js/jquery.easing.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+<!-- axios 비동기 통신용 -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<th:block layout:fragment="script">
+    <!--  자바 스크립트 추가 코드  -->
+    <script>
+        // 전역변수 설정
+        let idCheckPass = false; // 아이디 중복 체크 안함.
+
+        // ID 중복 체크 버튼 클릭 이벤트
+        document.getElementById("checkIdBtn").addEventListener("click", function () {
+            const id = document.getElementById("inputId").value.trim();
+            if (!id) {
+                alert("아이디를 입력해주세요.");
+                return;  // 함수 호출시 더이상 진행하고 싶지 않을 때: return하면 종료
+            }
+            if (id.length < 4) {
+                alert("아이디는 최소 4글자 이상이어야 합니다. 다시 입력해주세요.");
+                return;
+            }
+
+            // 서버로 중복 체크 요청
+            axios
+                .get("/member/checkId?userId=" + id)
+                .then(function (response) {
+                    const result = response.data; // http body 추출
+                    const idCheckResult = document.getElementById("idCheckResult");
+                    if (result) {
+                        // span 태그 사이에 넣어야함.
+                        idCheckPass = true; // 아이디 중복 체크 완료
+                        idCheckResult.style.color = "green";
+                        idCheckResult.textContent = "🎉 사용 가능한 아이디.";
+                    } else {
+                        idCheckResult.style.color = "red";
+                        idCheckResult.textContent = "⚠️ 이미 사용 중인 아이디.";
+                    }
+                })
+                .catch(function (error) {
+                    alert("아이디 중복 체크 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                    console.log(error);
+                });
+
+            // 서버로부터 중복체크 결과를 받은 이후에 출력
+            // (사용 가능한 아이디, 불가능한 아이디인지 출력)
+        });
+
+        // ID 입력 필드 변경 시 중복체크 상태 초기화
+        document.getElementById("inputId").addEventListener("input", function () {
+            idCheckPass = false; // ID가 변경되면 중복 체크 상태 초기화
+            const idCheckResult = document.getElementById("idCheckResult");
+            idCheckResult.textContent = ""; // 결과 메시지도 초기화
+        });
+
+        // [이메일 인증코드 발송] --------------------
+        document.getElementById("sendEmailBtn").addEventListener("click", function () {
+            const email = document.getElementById("inputEmail").value.trim();
+            if (!email) {
+                alert("이메일을 입력해주세요.");
+                return;
+            }
+            // 이메일 형식 확인
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("올바른 이메일 형식을 입력해주세요!");
+                return;
+            }
+
+            // 서버에 이메일 인증코드 발송 요청
+            axios.post("/member/sendCode", null, {
+                params: { userEmail: email }
+            })
+                .then(function (response) {
+                    if (response.data === "success") {
+                        alert("인증코드가 이메일로 발송되었습니다. 메일함을 확인해주세요.");
+                    } else {
+                        alert("이메일 발송 실패. 다시 시도해주세요.");
+                    }
+                })
+                .catch(function (error) {
+                    alert("이메일 발송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+                    console.log(error);
+                });
+        });
+
+        // 폼 제출 버튼 클릭 이벤트
+        document.getElementById("submitBtn").addEventListener("click", function () {
+            const inputId = document.getElementById("inputId").value.trim();
+            const inputPassword = document.getElementById("inputPassword").value.trim();
+            const repeatPassword = document.getElementById("repeatPassword").value.trim();
+            const inputName = document.getElementById("inputName").value.trim();
+            const inputEmail = document.getElementById("inputEmail").value.trim();
+            const emailAuthCodeInput = document.getElementById("emailAuthCodeInput").value.trim();
+            console.log(inputId + " " + inputPassword + " " + inputName + " " + inputEmail);
+
+            // 유효성 검사
+            // 이메일 정규식
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // 이메일 형식 검증
+            if (!emailPattern.test(inputEmail)) {
+                alert("올바른 이메일 형식을 입력해주세요!");
+                return;
+            }
+            // 1) ID 중복체크 여부
+            if (!idCheckPass) {
+                alert("아이디 중복 체크를 완료해주세요.");
+                return;
+            }
+            // 2) 필수값 검사
+            if (!inputId || !inputPassword || !inputName || !inputEmail || !emailAuthCodeInput) {
+                alert("모든 입력값을 정확히 채워주세요.");
+                return;
+            }
+            // 3) 비밀번호 동일성 검사
+            if (inputPassword !== repeatPassword) {
+                alert("입력한 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+                return;
+            }
+            // 비밀번호 최소 길이 예시
+            if (inputPassword.length < 4) {
+                alert("비밀번호는 최소 4글자 이상이어야 합니다. 다시 입력해주세요.");
+                return;
+            }
+
+            // 이 함수가 return으로 중단되지 않았으면 폼 전송해주세요
+            // 자바스크립트로 유효성 검증 후 submit 하려면
+            // form내의 button의 type을 type="button"으로 바꿔줌.
+            // 4) 폼 제출
+            document.getElementById("signUpForm").submit();
+            alert("회원가입이 완료되었습니다. 환영합니다!")
+        });
+
+    </script>
+</th:block>
+</body>
+
+</html>

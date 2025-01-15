@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.chart.mapper.ChartMapper">
+
+    <select id="getBranches"
+            resultType="com.ssginc.nojam.chart.vo.GetBranchIdAndNameDto">
+        SELECT branch_id AS branchId, branch_name AS branchName
+        FROM branch
+        LIMIT 5;
+    </select>
+
+    <select id="getCategoryLabels"
+            resultType="string">
+        SELECT category2 FROM item
+        GROUP BY category2
+        ORDER BY category2
+    </select>
+
+    <select id="getSalesByCategory"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity) FROM sales s
+        JOIN item i ON s.item_id = i.item_id
+        <where>
+            <if test='branchId != ""'>
+                AND branch_id = #{branchId}
+            </if>
+        </where>
+        GROUP BY i.category2
+        ORDER BY i.category2
+    </select>
+
+    <select id="getIncomingByCategory"
+            resultType="java.lang.Integer">
+        SELECT SUM(ic.quantity) FROM incoming ic
+        JOIN item i ON ic.item_id = i.item_id
+        <where>
+            <if test='branchId != ""'>
+                AND branch_id = #{branchId}
+            </if>
+        </where>
+        GROUP BY i.category2
+        ORDER BY i.category2
+    </select>
+
+    <select id="getSalesByDayOfWeek"
+            resultType="com.ssginc.nojam.chart.vo.GetSalesAndDateDto">
+        WITH RECURSIVE CTE AS (
+            SELECT DATE(#{startDate}) AS date
+            UNION ALL
+            SELECT DATE_ADD(date, INTERVAL 1 DAY)
+            FROM CTE
+            WHERE date &lt; DATE(#{endDate})
+        )
+        SELECT CTE.date AS dayOfWeek, IFNULL(s.sum, 0) AS sumOfSales
+        FROM CTE
+        LEFT OUTER JOIN (
+            SELECT DATE(sales_date) AS temp, SUM(sales_quantity) AS sum
+            FROM sales
+            WHERE sales_date
+            BETWEEN DATE(#{startDate}) AND (DATE(#{endDate}) + 1)
+            <if test='branchId != ""'>
+                AND branch_id = #{branchId}
+            </if>
+            GROUP BY DATE(sales_date)
+            ORDER BY DATE(sales_date) ASC
+        ) s
+        ON CTE.date = temp
+    </select>
+
+    <select id="getSalesAmountByDate"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity * price) AS totalSalesAmount
+        FROM sales s
+        JOIN item i
+        ON s.item_id = i.item_id
+        WHERE DATE_FORMAT(s.sales_date, "%Y-%m-%d") = #{date}
+        <if test='branchId != ""'>
+            AND branch_id = #{branchId}
+        </if>
+    </select>
+
+    <select id="getSalesAmountByMonth"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity * price) AS totalSalesAmount
+        FROM sales s
+        JOIN item i
+        ON s.item_id = i.item_id
+        WHERE DATE_FORMAT(s.sales_date, "%Y-%m") = #{date}
+        <if test='branchId != ""'>
+            AND branch_id = #{branchId}
+        </if>
+    </select>
+
+    <select id="getSalesAmountByYear"
+            resultType="java.lang.Integer">
+        SELECT SUM(s.sales_quantity * price) AS totalSalesAmount
+        FROM sales s
+        JOIN item i
+        ON s.item_id = i.item_id
+        WHERE DATE_FORMAT(s.sales_date, "%Y") = #{date}
+        <if test='branchId != ""'>
+            AND branch_id = #{branchId}
+        </if>
+    </select>
+
+    <select id="getStatusCount"
+            resultType="com.ssginc.nojam.chart.vo.GetStatusAndCountDto">
+        SELECT status, COUNT(*) AS count
+        FROM outgoing
+        GROUP BY status;
+    </select>
+
+
+</mapper>

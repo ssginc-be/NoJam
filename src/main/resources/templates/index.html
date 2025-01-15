@@ -1,90 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    
-    <title>SB Admin 2 - Login</title>
-    
-    <!-- Custom fonts for this template-->
-    <link href="/css/all.css" rel="stylesheet" type="text/css">
-    <link
-            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-            rel="stylesheet">
-    
-    <!-- Custom styles for this template-->
-    <link href="/css/sb-admin-2.css" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
+  <title>로그인</title>
+
+  <!-- SUIT 폰트 (CDN) -->
+  <link
+          href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/stylesheet.css"
+          rel="stylesheet"
+  />
+
+  <!-- 커스텀 CSS -->
+  <link rel="stylesheet" th:href="@{/css/login.css}"/>
 </head>
 
-<body class="bg-gradient-primary">
-<div class="container">
-    
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-        
-        <div class="col-xl-10 col-lg-12 col-md-9">
-            
-            <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                    <!-- Nested Row within Card Body -->
-                    <div class="row">
-                        <div class="col-lg-6 d-none d-lg-block bg-login-image" style="align-items:center !important; display: flex !important; justify-content:center !important;">
-                            <img src="/img/login.png" alt="이미지 자리" width="191" height="187">
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="p-5">
-                                <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                                </div>
-                                <form class="user">
-                                    <div class="form-group">
-                                        <input type="email" class="form-control form-control-user"
-                                               id="exampleInputEmail" aria-describedby="emailHelp"
-                                               placeholder="Enter Email Address...">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" class="form-control form-control-user"
-                                               id="exampleInputPassword" placeholder="Password">
-                                    </div>
-                                    <a href="/member/login" class="btn btn-primary btn-user btn-block">
-                                        Login
-                                    </a>
-                                </form>
-                                <hr>
-                                <div class="text-center">
-                                    <a class="small" href="/member/forgot-password">Forgot Password?</a>
-                                </div>
-                                <div class="text-center">
-                                    <a class="small" href="/member/register">Create an Account!</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<body>
+<div class="login-wrapper">
+
+  <!-- 서버측 에러 메시지 -->
+  <div th:if="${error}" class="error-message">
+    <span th:text="${error}"></span>
+  </div>
+
+  <div class="login-content">
+    <!-- 로그인 폼 -->
+    <div class="login-form-container">
+      <div class="login-form-container2">
+        <form action="/member/login" method="POST" id="loginForm" class="login-form">
+
+          <div class="logo-image-container">
+            <div class="logo-image-area">
+              <img th:src="@{/img/nobrand-logo1.png}"
+                   alt="브랜드 로고 이미지"
+                   class="logo-image2"/>
+              <img th:src="@{/img/nobrand-logo2.png}"
+                   alt="브랜드 로고 이미지2"
+                   class="logo-image3"/>
             </div>
-        
+          </div>
+          <!-- 로그인 제목 -->
+
+
+          <!-- 아이디 -->
+          <label for="inputId" class="label-id">아이디</label>
+          <div class="input-group">
+            <input
+                    type="text"
+                    id="inputId"
+                    name="userId"
+                    class="input-id"
+                    placeholder="아이디"
+            />
+          </div>
+
+          <!-- 비밀번호 -->
+          <label for="inputPassword" class="label-pw">비밀번호</label>
+          <div class="input-group">
+            <input
+                    type="password"
+                    id="inputPassword"
+                    name="userPw"
+                    class="input-pw"
+                    placeholder="비밀번호"
+            />
+          </div>
+
+          <!-- 로그인 버튼 -->
+          <div class="login-button">
+            <button type="button" class="login-btn" id="loginBtn">로그인</button>
+          </div>
+        </form>
+
+        <!-- 비밀번호 찾기 -->
+        <div class="forgot-password">
+          비밀번호를 잊어버리셨나요?
+          <a class="small" href="/member/forgot-password">비밀번호 찾기</a>
         </div>
-    
+
+        <!-- 회원가입 버튼 -->
+        <div class="signup-button">
+          <button type="button" class="signup-btn" id="signupBtn">회원가입</button>
+        </div>
+      </div>
     </div>
+
+    <!-- 이미지 영역 -->
+    <div class="login-image-container">
+      <div class="login-image-area">
+        <img th:src="@{/img/welcome-bg.png}"
+             alt="브랜드 매장 이미지"
+             class="login-image"/>
+      </div>
+    </div>
+
+  </div>
 
 </div>
 
-<!-- Bootstrap core JavaScript-->
+<!-- 로그인 실패 시 alert 메시지 표시 -->
+<th:block th:if="${loginError}">
+  <script>
+    alert("아이디 또는 패스워드가 맞지 않습니다.");
+  </script>
+</th:block>
+
+<!-- 임시 비밀번호 발급 성공 시 alert 메시지 표시 -->
+<th:block th:if="${sendSuccess}">
+  <script>
+    alert("임시 비밀번호가 이메일로 전송되었습니다. 이메일을 확인해주세요.");
+  </script>
+</th:block>
+
+<!-- 자바스크립트 로직(axios 등) -->
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
 <script src="/js/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
 <script src="/js/sb-admin-2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<th:block layout:fragment="script">
+  <script>
+    // 로그인 버튼 클릭 이벤트
+    document.getElementById("loginBtn").addEventListener("click", function (event) {
+      const inputId = document.getElementById("inputId").value.trim();
+      const inputPassword = document.getElementById("inputPassword").value.trim();
+
+      // 유효성 검사
+      if (!inputId) {
+        alert("아이디를 입력해주세요.");
+        event.preventDefault(); // 폼 제출 중단
+        return;
+      }
+
+      if (!inputPassword) {
+        alert("비밀번호를 입력해주세요.");
+        event.preventDefault();
+        return;
+      }
+
+      // 모든 유효성 검사를 통과한 경우
+      document.getElementById("loginForm").submit();
+      console.log(`ID: ${inputId}, Password: ${inputPassword}`);
+    });
+
+    // 회원가입 버튼 클릭 이벤트
+    document.getElementById('signupBtn').addEventListener('click', function() {
+      window.location.href = '/member/signup';
+    });
+
+
+    // 필요에 따라 추가 구현 가능
+  </script>
+</th:block>
 
 </body>
-
 </html>
