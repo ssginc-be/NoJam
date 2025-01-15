@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -129,6 +132,22 @@ public class MemberService {
 
         // 비밀번호 업데이트
         int result = memberMapper.updatePassword(userId, encodedNewPassword);
+        return result > 0;
+    }
+
+    // 모든 BMNG, BWKR, GUEST 역할의 회원을 조회 (지점 회원 관리)
+    public List<MemberVO> getAllMembersWithRoles() {
+        return memberMapper.selectAllMembersWithRoles();
+    }
+
+    // 특정 회원의 user_role을 업데이트 (지점 회원 관리)
+    public boolean updateMemberRole(String userId, String newRole) {
+        // 유효한 역할인지 확인
+        if (!Arrays.asList("BMNG", "BWKR", "GUEST").contains(newRole)) {
+            log.warn("Invalid user role: {}", newRole);
+            return false;
+        }
+        int result = memberMapper.updateUserRole(userId, newRole);
         return result > 0;
     }
 }

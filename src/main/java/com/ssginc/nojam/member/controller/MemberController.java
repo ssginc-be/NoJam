@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.SecureRandom;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -398,4 +399,43 @@ public class MemberController {
             return "member/update-mypage";
         }
     }
+
+    // HEAD 사용자를 위한 회원 관리 페이지 (지점 회원 관리)
+    @GetMapping("manage-members")
+    public String manageMembers(HttpSession session, Model model) {
+        String userRole = (String) session.getAttribute("userRole");
+        if (!"HEAD".equals(userRole)) {
+            // 권한이 없는 사용자 접근 시 홈으로 리다이렉트
+            return "redirect:/";
+        }
+
+        // 모든 BMNG, BWKR, GUEST 역할의 회원을 조회
+        List<MemberVO> members = memberService.getAllMembersWithRoles();
+        model.addAttribute("members", members);
+
+        // 모든 고유 branchId를 수집
+        Set<String> branchIds = new HashSet<>();
+        for (MemberVO member : members) {
+            if (member.getBranchId() != null) {
+                branchIds.add(member.getBranchId());
+            }
+        }
+
+        // branchId에 해당하는 branchName을 매핑
+        Map<String, String> branchIdNameMap = new HashMap<>();
+        for (String branchId : branchIds) {
+            BranchVO branch = branchService.selectBranchName(branchId);
+            if (branch != null) {
+                branchIdNameMap.put(branchId, branch.getBranchName());
+            } else {
+                branchIdNameMap.put(branchId, "N/A");
+                log.warn("해당 branchId에 대한 지점 정보를 찾을 수 없습니다: " + branchId);
+            }
+        }
+
+        model.addAttribute("branchIdNameMap", branchIdNameMap);
+
+        return "member/manage-members"; // 새로 생성할 HTML 파일 경로
+    }
+
 }

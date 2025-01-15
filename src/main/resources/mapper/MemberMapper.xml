@@ -50,4 +50,24 @@
         WHERE user_id = #{userId}
     </update>
 
+    <!-- 모든 BMNG, BWKR, GUEST 역할의 회원을 조회 (지점 회원 관리) -->
+    <select id="selectAllMembersWithRoles" resultType="com.ssginc.nojam.member.vo.MemberVO">
+        SELECT
+            m.user_id,
+            m.user_name,
+            m.user_email,
+            m.branch_id,
+            m.user_role
+        FROM member m
+        WHERE m.user_role IN ('BMNG', 'BWKR', 'GUEST')
+    </select>
+
+    <!-- 특정 회원의 user_role을 업데이트 (지점 회원 관리) -->
+    <update id="updateUserRole" parameterType="map">
+        UPDATE member
+        SET user_role = #{userRole},
+            last_modified_at = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
 </mapper>

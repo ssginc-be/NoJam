@@ -25,4 +25,10 @@ public interface MemberMapper {
     int updateUserName(MemberVO memberVO);
     // 비밀번호 업데이트
     int updatePassword(@Param("userId") String userId, @Param("userPw") String userPw);
+
+    // 모든 BMNG, BWKR, GUEST 역할의 회원을 조회 (지점 회원 관리)
+    List<MemberVO> selectAllMembersWithRoles();
+
+    // 특정 회원의 user_role을 업데이트 (지점 회원 관리)
+    int updateUserRole(@Param("userId") String userId, @Param("userRole") String userRole);
 }
