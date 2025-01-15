@@ -2,6 +2,9 @@ package com.ssginc.nojam.chart.controller;
 
 import com.ssginc.nojam.chart.service.ChartService;
 import com.ssginc.nojam.chart.vo.GetBranchIdAndNameDto;
+import com.ssginc.nojam.chart.vo.GetSalesAndDateDto;
+import com.ssginc.nojam.chart.vo.GetStatusAndCountDto;
+import com.ssginc.nojam.chart.vo.GetStatusAndPercentageDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ public class ChartController {
 
     private final ChartService chartService;
 
+    // 차트 화면 이동 메서드
     @GetMapping("/")
     public String chart(Model model, HttpSession session) {
         System.out.println("==============================================");
@@ -61,6 +65,7 @@ public class ChartController {
         return category2Labels;
     }
 
+    // 카테고리별 판매량을 가져오기 위한 메서드
     @GetMapping("salesByCategory")
     @ResponseBody
     public List<Integer> getSalesByCategory(@RequestParam String branchId) {
@@ -68,7 +73,6 @@ public class ChartController {
         System.out.println("GET request to get Sales By Category received...");
         System.out.println("==============================================");
         System.out.println("branch id >>>> \"" + branchId + "\"");
-
 
         List<Integer> salesByCategoryData = chartService.getSalesByCategory(branchId);
 
@@ -79,4 +83,112 @@ public class ChartController {
         return salesByCategoryData;
     }
 
+    // 카테고리별 입고량을 가져오기 위한 메서드
+    @GetMapping("incomingByCategory")
+    @ResponseBody
+    public List<Integer> getIncomingByCategory(@RequestParam String branchId) {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Incoming Quantity By Category received...");
+        System.out.println("==============================================");
+        System.out.println("branch id >>>> \"" + branchId + "\"");
+
+        List<Integer> incomingByCategoryData = chartService.getIncomingByCategory(branchId);
+
+        System.out.println("==============================================");
+        System.out.println(incomingByCategoryData);
+        System.out.println("==============================================");
+
+        return incomingByCategoryData;
+    }
+
+    // 일자별 판매량을 가져오기 위한 메서드
+    @GetMapping("salesByDayOfWeek")
+    @ResponseBody
+    public List<GetSalesAndDateDto> getSalesByDayOfWeek(@RequestParam String endDate, @RequestParam String branchId) {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Sales By Day of week received...");
+        System.out.println("==============================================");
+        System.out.println("Selected End Date >>> \"" + endDate + "\"");
+        System.out.println("branch id >>>> \"" + branchId + "\"");
+
+        List<GetSalesAndDateDto> salesByDayOfWeek = chartService.getSalesByDayOfWeek(endDate, branchId);
+
+        System.out.println("==============================================");
+        System.out.println(salesByDayOfWeek);
+        System.out.println("==============================================");
+
+        return salesByDayOfWeek;
+    }
+
+    // 하루 총 판매 금액
+    @GetMapping("salesAmountByDate")
+    @ResponseBody
+    public int getSalesAmountByDate(@RequestParam("branchId") String branchId, @RequestParam("date") String date) {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Sales Amount By Date received...");
+        System.out.println("==============================================");
+        System.out.println("Date >>> \"" + date + "\"");
+        System.out.println("branch id >>>> \"" + branchId + "\"");
+
+        int salesAmountByDate = chartService.getSalesAmountByDate(branchId, date);
+
+        System.out.println("==============================================");
+        System.out.println(salesAmountByDate);
+        System.out.println("==============================================");
+
+        return salesAmountByDate;
+    }
+
+    // 한 달 총 판매 금액
+    @GetMapping("salesAmountByMonth")
+    @ResponseBody
+    public int getSalesAmountByMonth(@RequestParam("branchId") String branchId, @RequestParam("date") String date) {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Sales Amount By Month received...");
+        System.out.println("==============================================");
+        System.out.println("Date >>> \"" + date + "\"");
+        System.out.println("branch id >>>> \"" + branchId + "\"");
+
+        int salesAmountByMonth = chartService.getSalesAmountByMonth(branchId, date);
+
+        System.out.println("==============================================");
+        System.out.println(salesAmountByMonth);
+        System.out.println("==============================================");
+
+        return salesAmountByMonth;
+    }
+
+    // 일년 총 판매 금액
+    @GetMapping("salesAmountByYear")
+    @ResponseBody
+    public int getSalesAmountByYear(@RequestParam("branchId") String branchId, @RequestParam("date") String date) {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Sales Amount By Year received...");
+        System.out.println("==============================================");
+        System.out.println("Date >>> \"" + date + "\"");
+        System.out.println("branch id >>>> \"" + branchId + "\"");
+
+        int salesAmountByYear = chartService.getSalesAmountByYear(branchId, date);
+
+        System.out.println("==============================================");
+        System.out.println(salesAmountByYear);
+        System.out.println("==============================================");
+
+        return salesAmountByYear;
+    }
+
+    @GetMapping("/statusCount")
+    @ResponseBody
+    public List<GetStatusAndPercentageDto> getStatusCount() {
+        System.out.println("==============================================");
+        System.out.println("GET request to get Sales Amount By Year received...");
+        System.out.println("==============================================");
+
+        List<GetStatusAndPercentageDto> statusAndPercentageDtos = chartService.getStatusCount();
+
+        System.out.println(statusAndPercentageDtos);
+        System.out.println("==============================================");
+
+        return statusAndPercentageDtos;
+    }
 }

@@ -6,7 +6,11 @@
 <head layout:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Layout</title>
+
+    <!-- font cdn -->
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css" rel="stylesheet">
+    <style>@import url('https://fonts.googleapis.com/css2?family=Lufga:wght@400;600&family=SUIT:wght@400;600&display=swap');</style>
+
     <link href="/css/layout.css" rel="stylesheet"/>
     <!-- Custom fonts for this template-->
     <link href="/css/all.css" rel="stylesheet" type="text/css">
@@ -23,27 +27,25 @@
 <div class="sidebar">
     <div>
         <div class="logo" onclick="location.href='/chart/'" style="cursor:pointer;">
-            <img src="/img/WNobrandIcon.png" alt="Logo">
-            <span><span class="highlight">N</span>oJam</span>
+            <img src="/img/nojam-logo.svg" alt="Logo">
         </div>
         <div class="menu">
             <div class="menu-item active" onclick="location.href='/chart/'" style="cursor:pointer;">Dashboard</div>
             
             <div class="menu-item" onclick="toggleSubmenu(this, 'inventory-submenu')">재고관리</div>
             <div class="submenu" id="inventory-submenu">
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href='';">재고 전체 조회</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">재고 필터링 조회</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">재고 조정</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">부족 재고 조회</div>
+                <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/stock/head/view/query/1?category=&value='">재고 조회</div>
+                <div th:if="${!#strings.equals(session.userRole, 'HEAD')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/stock/branch/view/query/1?category=&value='">재고 조회</div>
             </div>
             
             <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
                  class="menu-item" onclick="toggleSubmenu(this, 'shipping-submenu')">출고관리</div>
             <div class="submenu" id="shipping-submenu">
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">출고 전체 조회</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">출고 필터링 조회</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">출고 등록</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">출고 완료 처리</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/view/1'">출고 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/pending/1'">출고 승인/거절</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/outgoing/indelivery/1'">출고 완료 처리</div>
             </div>
             
             <div th:if="${#strings.equals(session.userRole, 'BMNG')} or ${#strings.equals(session.userRole, 'BWKR')}"
@@ -56,36 +58,41 @@
             <div th:if="${#strings.equals(session.userRole, 'BMNG')} or ${#strings.equals(session.userRole, 'BWKR')}"
                  class="menu-item" onclick="toggleSubmenu(this, 'order-submenu')">발주관리</div>
             <div class="submenu" id="order-submenu">
+                <div class="submenu-item" onclick="activateSubmenu(this)">발주 내역 조회</div>
                 <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
                      class="submenu-item" onclick="activateSubmenu(this); location.href='/order/items/view'">발주 등록</div>
                 <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
                      class="submenu-item" onclick="activateSubmenu(this); location.href='/order/cancel/view'">발주 취소</div>
                 <div class="submenu-item" onclick="activateSubmenu(this), location.href='/order/history/view'">발주 내역 조회</div>
+<!--                      class="submenu-item" onclick="activateSubmenu(this); location.href='/order/upload'">발주 내역서 등록</div>
+                <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
+                     class="submenu-item" onclick="activateSubmenu(this); location.href=''">발주 취소</div> -->
             </div>
             
             <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
-                 class="menu-item" onclick="toggleSubmenu(this, 'system-submenu')">시스템</div>
+                 class="menu-item" onclick="toggleSubmenu(this, 'system-submenu')">지점 관리</div>
             <div class="submenu" id="system-submenu">
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">지점 정보 조회</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">지점 정보 저장</div>
-                <div class="submenu-item" onclick="activateSubmenu(this); location.href=''">지점 회원 관리</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/map/'">지점 정보 조회</div>
+                <div class="submenu-item" onclick="activateSubmenu(this); location.href='/member/manage-members'">지점 회원 관리</div>
             </div>
-            
-            <div th:if="${#strings.equals(session.userRole, 'HEAD')}"
-                 class="menu-item" onclick="location.href=''">사용이력관리</div>
+
+            <div class="menu-item" onclick="location.href='/member/mypage'">마이페이지</div>
         </div>
     </div>
     <div>
         <div class="user-info-button">
             <div class="user-info">
-                <img src="/img/user.jpg" alt="User">
+                <img th:if="${#strings.equals(session.userRole, 'HEAD')}" src="/img/user-profile.png" alt="User">
+                <img th:if="!${#strings.equals(session.userRole, 'HEAD')}" src="/img/user-profile-2.png" alt="User">
                 <div>
-                    <div class="user-id">User</div>
-                    <div class="user-role">본사</div>
+                    <div class="user-id">[[${session.userName}]]</div>
+                    <div th:if="${#strings.equals(session.userRole, 'HEAD')}" class="user-role">본사</div>
+                    <div th:if="${#strings.equals(session.userRole, 'BMNG')}" class="user-role">지점장</div>
+                    <div th:if="${#strings.equals(session.userRole, 'BWKR')}" class="user-role">지점직원</div>
                 </div>
             </div>
             <div class="logout-icon" onclick="logout(event)">
-                <img src="/img/logout.png" alt="Logout">
+                <img src="/img/logout-icon.svg" alt="Logout">
             </div>
         </div>
     </div>
@@ -106,12 +113,8 @@
 <!-- Page level plugins -->
 <script th:src="@{/js/Chart.min.js}"></script>
 
-<!-- Page level custom scripts -->
-<script th:src="@{/js/demo/chart-area-demo.js}"></script>
-<script th:src="@{/js/demo/chart-pie-demo.js}"></script>
-
 <th:block layout:fragment="script">
-    <!--        자바 스크립트 들어갈 부분~-->
+    <!-- 자바 스크립트 들어갈 부분~-->
 </th:block>
 </body>
 </html>

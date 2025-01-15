@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <title>비밀번호 찾기</title>
+
+    <!-- SUIT 폰트 (CDN) -->
+    <link
+            href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/stylesheet.css"
+            rel="stylesheet"
+    />
+
+    <!-- 커스텀 CSS -->
+    <link rel="stylesheet" th:href="@{/css/find-pw.css}"/>
+</head>
+
+<body>
+<div class="find-pw-wrapper">
+
+    <!-- 서버측 에러 메시지 -->
+    <div th:if="${error}" class="error-message">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div class="find-pw-content">
+        <!-- 비밀번호 찾기 폼 -->
+        <div class="find-pw-form-container">
+            <form action="/member/find-password" method="POST" id="findPwForm" class="find-pw-form">
+
+                <div class="find-pw-header">
+                    <h2>비밀번호 찾기</h2>
+                </div>
+
+                <!-- 이메일 -->
+                <label for="inputEmail" class="label-email">이메일</label>
+                <div class="input-group">
+                    <input
+                            type="text"
+                            id="inputEmail"
+                            name="userEmail"
+                            class="input-email"
+                            placeholder="이메일을 입력하세요."
+                            required
+                    />
+                    <select id="emailSelect" name="emailDomain" class="email-select">
+                        <option value="">직접 입력</option>
+                        <option value="@gmail.com">@gmail.com</option>
+                        <option value="@naver.com">@naver.com</option>
+                        <option value="@daum.net">@daum.net</option>
+                    </select>
+                </div>
+
+                <div class="find-pw-comment">
+                    <p>✍ 가입 시 등록한 이메일 주소를 입력해주세요.</p>
+                </div>
+
+
+                <!-- 전송 버튼 -->
+                <div class="send-button">
+                    <button type="button" class="send-btn" id="sendBtn">임시 비밀번호 전송</button>
+                </div>
+            </form>
+
+            <!-- 회원가입 페이지로 이동 -->
+            <div class="go-signup">
+                아직 계정이 없으신가요?
+                <a class="small" href="/member/signup">회원가입</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 전송 성공 시 alert 메시지 표시 -->
+<th:block th:if="${sendSuccess}">
+    <script>
+        alert("임시 비밀번호가 이메일로 전송되었습니다.");
+    </script>
+</th:block>
+
+<!-- 전송 실패 시 alert 메시지 표시 -->
+<th:block th:if="${sendError}">
+    <script>
+        alert("이메일 전송에 실패했습니다. 다시 시도해주세요.");
+    </script>
+</th:block>
+
+<!-- 자바스크립트 로직 -->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/jquery.easing.min.js"></script>
+<script src="/js/sb-admin-2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<th:block layout:fragment="script">
+    <script>
+        // 전송 버튼 클릭 이벤트
+        document.getElementById("sendBtn").addEventListener("click", function (event) {
+            const inputEmail = document.getElementById("inputEmail").value.trim();
+            const emailSelect = document.querySelector(".email-select").value;
+
+            // 이메일 도메인을 결합
+            let completeEmail = inputEmail;
+            if (emailSelect) {
+                completeEmail += emailSelect; // 도메인이 선택된 경우 결합
+            }
+
+            // 유효성 검사
+            if (!inputEmail) {
+                alert("이메일을 입력해주세요.");
+                event.preventDefault(); // 폼 제출 중단
+                return;
+            }
+
+            // 이메일 형식 검사
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(completeEmail)) {
+                alert("유효한 이메일 주소를 입력해주세요.");
+                event.preventDefault();
+                return;
+            }
+
+            // 모든 유효성 검사를 통과한 경우
+            document.getElementById("findPwForm").submit();
+            console.log(`Email: ${completeEmail}`);
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

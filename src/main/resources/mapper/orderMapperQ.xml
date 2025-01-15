@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.order.mapper.OrderMapperQ">
+
+    <!-- ID로 발주 조회 -->
+    <select id="findOrderById"
+            resultType="com.ssginc.nojam.order.vo.OrderVOQ">
+        SELECT *
+        FROM `order`
+        WHERE order_id = ${orderId}
+    </select>
+
+    <!-- 발주 리스트 저장(OCR) -->
+    <insert id="insertOrders"
+            parameterType="java.util.List">
+        INSERT INTO `order`(item_id, branch_id, quantity, order_time)
+        VALUES
+        <foreach collection="od" item="od" separator=",">
+            (${od.itemId}, #{branchId}, ${od.quantity}, #{orderTime})
+        </foreach>
+    </insert>
+
+    <!-- 상품ID 리스트 통해 상품명 리스트 조회 -->
+    <!-- 사실 여기 있으면 안되는 코드임 -->
+    <select id="getItemsByItemIdList"
+            resultType="com.ssginc.nojam.crawl.vo.ItemVO">
+        SELECT *
+        FROM `item`
+        WHERE item_id IN
+        <foreach collection="idList" item="idVal" separator="," open="(" close=")">
+              #{idVal}
+        </foreach>
+    </select>
+
+</mapper>

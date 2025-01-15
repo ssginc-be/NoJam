@@ -64,4 +64,13 @@ public class BranchService {
 
         return ResponseEntity.ok().build();
     }
+    /**
+     * 특정 branchId에 대한 BranchVO를 반환합니다.
+     *
+     * @param branchId 조회할 branch의 ID
+     * @return BranchVO 객체 또는 null
+     */
+    public BranchVO selectBranchName(String branchId) {
+        return mapper.selectBranchName(branchId);
+    }
 }

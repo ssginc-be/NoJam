@@ -17,13 +17,12 @@
 </head>
 <body>
 
-    <!-- content fragment로 부모 layout의 content 영역을 대체 -->
-    <div layout:fragment="content" class="container">
-        <div class="header">
-            <div class="header-left">
-                <h2>지점 관리</h2>
-                <p>전국 지점 조회</p>
-            </div>
+<!-- content fragment로 부모 layout의 content 영역을 대체 -->
+<div layout:fragment="content" class="content">
+    <div class="wrapper">
+        <div class="title-area">
+            <span class="main-title">지점 관리</span>
+            <span class="sub-title">전국 지점 조회</span>
         </div>
 
         <div class="search-bar-row">
@@ -44,36 +43,36 @@
         <div class="map-info-container">
             <div id="map"></div>
             <div class="info-panel">
-                <h3>선택 지점 정보</h3>
+                <h3><b>선택 지점 정보</b></h3>
 
                 <!-- 지점 ID -->
                 <div class="info-item">
                     <label class="label" for="input-branch-id">지점 ID:</label>
-                    <input type="text" id="input-branch-id" disabled placeholder="-" />
+                    <input type="text" id="input-branch-id" disabled placeholder="-"/>
                 </div>
 
                 <!-- 지점명 -->
                 <div class="info-item">
                     <label class="label" for="input-branch-name">지점명:</label>
-                    <input type="text" id="input-branch-name" disabled placeholder="-" />
+                    <input type="text" id="input-branch-name" disabled placeholder="-"/>
                 </div>
 
                 <!-- 우편번호 -->
                 <div class="info-item">
                     <label class="label" for="input-branch-postcode">우편번호:</label>
-                    <input type="text" id="input-branch-postcode" disabled placeholder="-" />
+                    <input type="text" id="input-branch-postcode" disabled placeholder="-"/>
                 </div>
 
                 <!-- 주소 -->
                 <div class="info-item">
                     <label class="label" for="input-branch-address">주소:</label>
-                    <input type="text" id="input-branch-address" disabled placeholder="-" />
+                    <input type="text" id="input-branch-address" disabled placeholder="-"/>
                 </div>
 
                 <!-- 최종 수정일 -->
                 <div class="info-item">
                     <label class="label" for="input-branch-date">최종 수정일:</label>
-                    <input type="text" id="input-branch-date" disabled placeholder="-" />
+                    <input type="text" id="input-branch-date" disabled placeholder="-"/>
                 </div>
             </div>
         </div>
@@ -102,15 +101,15 @@
                 <button>&gt;</button>
             </div>
         </div>
-
     </div>
-    <th:block layout:fragment="script">
-        <!-- axios 비동기 통신용 -->
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</div>
+<th:block layout:fragment="script">
+    <!-- axios 비동기 통신용 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-        <!-- map.js 스크립트 포함 -->
-        <script src="/js/map.js"></script>
-    </th:block>
+    <!-- map.js 스크립트 포함 -->
+    <script src="/js/map.js"></script>
+</th:block>
 </body>
 
 </html>

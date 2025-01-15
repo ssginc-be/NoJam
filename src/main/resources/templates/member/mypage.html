@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <title>마이페이지</title>
+
+    <!-- SUIT 폰트 (CDN) -->
+    <link
+            href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/stylesheet.css"
+            rel="stylesheet"
+    />
+
+    <!-- 커스텀 CSS -->
+    <link rel="stylesheet" th:href="@{/css/mypage.css}"/>
+</head>
+<body>
+<!-- Begin Page Content -->
+<div class="content">
+    <div class="container" layout:fragment="content">
+
+        <div class="header">
+            <span class="main-title">마이페이지</span>
+            <a href="/member/update-mypage" class="edit-button">정보 수정</a>
+        </div>
+
+        <!-- 서버측 성공 메시지 -->
+        <div th:if="${successMessage}" class="success-message">
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <!-- 서버측 에러 메시지 -->
+        <div th:if="${error}" class="error-message">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- 회원 정보 확인 섹션 -->
+        <h4 class="section-header">회원 정보</h4>
+        <div class="section user-info">
+            <table class="info-table">
+                <tr>
+                    <th>아이디</th>
+                    <td th:text="${member.userId}"></td>
+                </tr>
+                <tr>
+                    <th>사용자명</th>
+                    <td th:text="${member.userName}"></td>
+                </tr>
+                <tr>
+                    <th>이메일</th>
+                    <td th:text="${member.userEmail}"></td>
+                </tr>
+                <tr>
+                    <th>지점 ID</th>
+                    <td th:text="${member.branchId} != null ? ${member.branchId} : 'N/A'"></td>
+                </tr>
+                <tr>
+                    <th>지점명</th>
+                    <td th:text="${branchName}"></td>
+                </tr>
+                <tr>
+                    <th>역할</th>
+                    <td th:text="${member.userRole}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- /.container -->
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/js/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+</body>
+</html>

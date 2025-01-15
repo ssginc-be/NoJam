@@ -113,7 +113,7 @@
                 </div>
 
                 <!-- 숨겨진 필드 추가: 전체 이메일을 저장 -->
-                <input type="hidden" name="userEmail" id="fullEmail" />
+                <input type="hidden" name="userEmail" id="fullEmail"/>
 
                 <!-- 이메일 인증코드 -->
                 <label for="emailAuthCodeInput" class="label-email-auth">이메일 인증코드</label>
@@ -158,13 +158,9 @@
         <!-- 이미지 영역 -->
         <div class="signup-image-container">
             <div class="signup-image-area">
-                <img th:src="@{/img/no-brand-store.jpg}"
+                <img th:src="@{/img/welcome-bg.png}"
                      alt="브랜드 매장 이미지"
                      class="signup-image"/>
-                <div class="image-overlay-text">
-                    이 부분에 흰색으로 텍스트 올라갈 예정<br/>
-                    근데 뭐 올릴진 미확정
-                </div>
             </div>
         </div>
     </div>
@@ -247,9 +243,6 @@
             }
 
             const sendEmailBtn = document.getElementById("sendEmailBtn");
-            // 버튼 텍스트를 "코드 전송"으로 변경
-            sendEmailBtn.textContent = "코드 전송";
-            sendEmailBtn.disabled = true; // 중복 클릭 방지
 
             // 서버에 이메일 인증코드 발송 요청
             axios
@@ -264,19 +257,15 @@
                         sendEmailBtn.classList.add("hidden");
                         const verifyCodeBtn = document.getElementById("verifyCodeBtn");
                         verifyCodeBtn.classList.remove("hidden");
+                    } else if (response.data === "duplicate") {
+                        alert("⚠ 입력하신 이메일 주소는 이미 사용 중입니다.");
                     } else {
                         alert("이메일 발송 실패. 다시 시도해주세요.");
-                        // 버튼 텍스트를 "코드 전송"으로 복구
-                        sendEmailBtn.textContent = "코드 전송";
-                        sendEmailBtn.disabled = false;
                     }
                 })
                 .catch(function (error) {
                     alert("이메일 발송 중 오류가 발생했습니다.");
                     console.log(error);
-                    // 버튼 텍스트를 "코드 전송"으로 복구
-                    sendEmailBtn.textContent = "코드 전송";
-                    sendEmailBtn.disabled = false;
                 });
         });
 
@@ -383,8 +372,8 @@
         document.getElementById("cancelBtn").addEventListener("click", function () {
             // 사용자에게 확인 메시지 표시
             if (confirm("가입을 취소하시겠습니까?")) {
-                // 확인(OK)을 누르면 /member/login1로 이동
-                window.location.href = "/member/login1";
+                // 확인(OK)을 누르면 index.html로 이동
+                window.location.href = "/";
             }
         });
 
