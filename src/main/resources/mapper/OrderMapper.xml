@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssginc.nojam.order.mapper.OrderMapper">
+
+    <!-- 아이템 전체 조회 -->
+    <select id="getAllItems" resultType="com.ssginc.nojam.order.vo.ItemVO">
+        SELECT item_id, name, category1, category2, price
+        FROM item
+    </select>
+
+    <!-- 현재 발주 목록 -->
+    <select id="getCurrentOrders" resultType="com.ssginc.nojam.order.vo.OrderVO">
+        SELECT order_id, quantity, item_id
+        FROM `order`
+    </select>
+
+    <!-- 발주 등록 -->
+    <insert id="insertOrder">
+        INSERT INTO `order` (
+            order_id,
+            quantity,
+            status,
+            order_time,
+            item_id,
+            branch_id
+        )
+        VALUES (
+                   #{orderId},
+                   #{quantity},
+                   '출고대기',
+                   NOW(),
+                   #{itemId},
+                   #{branchId}
+               )
+    </insert>
+
+    <!-- 발주 내역 (기본 페이징) -->
+    <select id="getOrders" resultType="com.ssginc.nojam.order.vo.OrderVO" >
+        SELECT
+        o.order_id,
+        o.quantity,
+        o.status,
+        o.order_time,
+        o.item_id,
+        i.name,
+        i.category1,
+        i.category2
+        FROM `order` o
+        LEFT JOIN item i ON o.item_id = i.item_id
+        ORDER BY o.order_id ASC
+        <!-- LIMIT 'B00001', 50 1 ~ 50  -->
+        LIMIT 50
+    </select>
+
+    <!-- 전체 발주 건수 -->
+    <select id="countAllOrders" resultType="int">
+        SELECT COUNT(*)
+        FROM `order`
+    </select>
+
+    <!-- 검색 결과 (JOIN 적용) -->
+    <select id="getFilteredOrders" resultType="com.ssginc.nojam.order.vo.OrderVO">
+        SELECT
+        o.order_id,
+        o.quantity,
+        o.status,
+        o.order_time,
+        o.item_id,
+        i.name,
+        i.category1,
+        i.category2
+        FROM `order` o
+        LEFT JOIN item i ON o.item_id = i.item_id
+        WHERE 1=1
+        <if test="category != null and category != '' and value != null and value != ''">
+            AND (${category} LIKE CONCAT('%', #{value}, '%'))
+        </if>
+        ORDER BY o.order_id ASC
+        LIMIT #{startIdx}, 50
+    </select>
+
+    <!-- 검색 결과 건수 (JOIN 적용) -->
+    <select id="countFilteredOrders" resultType="int">
+        SELECT COUNT(*)
+        FROM `order` o
+        LEFT JOIN item i ON o.item_id = i.item_id
+        WHERE 1=1
+        <if test="category != null and category != '' and value != null and value != ''">
+            AND (${category} LIKE CONCAT('%', #{value}, '%'))
+        </if>
+    </select>
+
+    <!--    &lt;!&ndash; 출고대기 상태의 발주 취소 &ndash;&gt;-->
+    <!--    <update id="cancelOrders">-->
+    <!--        UPDATE `order`-->
+    <!--        SET status = '취소'-->
+    <!--        WHERE status = '출고대기'-->
+    <!--        AND order_id IN-->
+    <!--        <foreach collection="orderIds" item="id" open="(" separator="," close=")">-->
+    <!--            #{id}-->
+    <!--        </foreach>-->
+    <!--    </update>-->
+
+    <!-- 출고대기 상태의 발주 취소 → 실제 DB 삭제 -->
+    <delete id="cancelOrders">
+        DELETE FROM `order`
+        WHERE status = '출고대기'
+        AND order_id IN
+        <foreach collection="orderIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

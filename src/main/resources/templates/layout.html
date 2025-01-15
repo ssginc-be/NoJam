@@ -57,10 +57,10 @@
                  class="menu-item" onclick="toggleSubmenu(this, 'order-submenu')">발주관리</div>
             <div class="submenu" id="order-submenu">
                 <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
-                     class="submenu-item" onclick="activateSubmenu(this); location.href=''">발주 등록</div>
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/order/items/view'">발주 등록</div>
                 <div th:if="${#strings.equals(session.userRole, 'BMNG')}"
-                     class="submenu-item" onclick="activateSubmenu(this); location.href=''">발주 취소</div>
-                <div class="submenu-item" onclick="activateSubmenu(this)">발주 내역 조회</div>
+                     class="submenu-item" onclick="activateSubmenu(this); location.href='/order/cancel/view'">발주 취소</div>
+                <div class="submenu-item" onclick="activateSubmenu(this), location.href='/order/history/view'">발주 내역 조회</div>
             </div>
             
             <div th:if="${#strings.equals(session.userRole, 'HEAD')}"

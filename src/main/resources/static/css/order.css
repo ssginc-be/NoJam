@@ -1,0 +1,335 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'SUIT', Arial, sans-serif;
+    background-color: #FFFFFF;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1500px; /* 콘텐츠 영역 확장 */
+
+}
+
+/* 콘텐츠 영역 */
+.content-area {
+    background-color: #F1F1F1; /* 배경색 흰색 */
+    width: 100%; /* 콘텐츠 영역 폭 확장 */
+    padding-left: 25px;
+    padding-right: 25px;
+
+}
+
+/* Headers */
+h1 {
+    color: #0D183F;
+    font-size: 24px; /* 제목 글씨 크기 줄이기 */
+    padding-bottom: 10px;
+}
+
+h4 {
+    color: #0D183F;
+    font-size: 19px; /* 제목 글씨 크기 줄이기 */
+    margin-bottom: 10px; /* 하단 여백 */
+    padding-bottom: 10px;
+}
+
+/* Search Section */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-bar select {
+    height: 30px; /* 높이 줄이기 */
+    font-size: 13px; /* 글씨 크기 줄이기 */
+    padding: 5px; /* 내부 여백 줄이기 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 160px;
+    margin-right: 10px;
+}
+
+.search-bar input {
+    height: 30px; /* 높이 줄이기 */
+    font-size: 13px; /* 글씨 크기 줄이기 */
+    padding: 5px; /* 내부 여백 줄이기 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 620px;
+}
+
+#searchButton {
+    height: 30px; /* 높이 줄이기 */
+    font-size: 13px; /* 글씨 크기 줄이기 */
+    padding: 5px; /* 내부 여백 줄이기 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 60px;
+    background-color: #FFD028;
+    color: #0D183F;
+    cursor: pointer;
+    padding: 4px 8px; /* 버튼 내부 여백 줄이기 */
+    margin-left: 10px;
+}
+
+#searchButton:hover {
+    background-color: #FFD028;
+    color: #FFFFFF;
+}
+
+#resetButton {
+    height: 30px; /* 높이 줄이기 */
+    font-size: 13px; /* 글씨 크기 줄이기 */
+    padding: 5px; /* 내부 여백 줄이기 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 56px;
+    background-color: #f3f3f3;
+    color: #0D183F;
+    cursor: pointer;
+    padding: 4px 8px; /* 버튼 내부 여백 줄이기 */
+    margin-left: 10px;
+}
+
+#resetButton:hover {
+    background-color: #f3f3f3;
+    color: #FFFFFF;
+}
+
+/* 상품 목록 섹션 */
+.item-table {
+    height: 550px; /* 높이 설정 */
+    width: 1000px; /* 폭 설정 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    overflow-x: hidden; /* 가로 스크롤 비활성화 */
+    background-color: #FFFFFF; /* 배경색 */
+    padding: 15px; /* 내부 여백 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    font-size: 12px; /* 글씨 크기 줄이기 */
+}
+
+/* 스크롤바 스타일 (크롬, 엣지, 사파리 전용) */
+.item-table::-webkit-scrollbar {
+    width: 6px; /* 세로 스크롤바 너비 */
+}
+
+.item-table::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* 스크롤바 색상 */
+    border-radius: 10px; /* 스크롤바 둥글게 */
+}
+
+.item-table::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* 스크롤 트랙 색상 */
+}
+
+/* 발주 등록 섹션 */
+.order-form {
+    height: 550px; /* 높이 설정 */
+    width: 400px; /* 폭 설정 */
+    background-color: #FFFFFF; /* 배경색 */
+    padding: 15px; /* 내부 여백 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    font-size: 16px; /* 글씨 크기 줄이기 */
+}
+
+.order-form input {
+    margin-bottom: 40px; /* 입력 필드 아래 여백 */
+}
+
+.btn1 {
+    height: 40px; /* 높이 줄이기 */
+    font-size: 15px; /* 글씨 크기 줄이기 */
+    padding: 5px; /* 내부 여백 줄이기 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 80px;
+    background-color: #FFD028;
+    color: #0D183F;
+    cursor: pointer;
+    padding: 4px 8px; /* 버튼 내부 여백 줄이기 */
+    margin-left: 10px;
+}
+
+.btn1:hover {
+    background-color: #FFD028;
+    color: #FFFFFF;
+}
+
+.btn2 {
+    height: 40px; /* 높이 줄이기 */
+    font-size: 15px; /* 글씨 크기 줄이기 */
+    padding: 5px; /* 내부 여백 줄이기 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 80px;
+    background-color: #FFD028;
+    color: #0D183F;
+    cursor: pointer;
+    padding: 4px 8px; /* 버튼 내부 여백 줄이기 */
+    margin-left: 10px;
+}
+
+.btn2:hover {
+    background-color: #FFD028;
+    color: #FFFFFF;
+}
+
+.btn3 {
+    height: 40px; /* 높이 줄이기 */
+    font-size: 15px; /* 글씨 크기 줄이기 */
+    padding: 5px; /* 내부 여백 줄이기 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 80px;
+    background-color: #f3f3f3;
+    color: #0D183F;
+    cursor: pointer;
+    padding: 4px 8px; /* 버튼 내부 여백 줄이기 */
+    margin-left: 10px;
+}
+
+.btn3:hover {
+    background-color: #f3f3f3;
+    color: #FFFFFF;
+}
+#searchResult {
+    display: block;
+    text-align: right;
+    margin-bottom: 10px;
+    color: #0D183F;
+}
+
+.fw-boldd {
+    font-weight: bold;
+}
+
+#addOrder {
+    font-size: 15px;
+    width: 150px;
+    margin-left: 110px; /* 상단 30px 여백, 수평 중앙 정렬 */
+    margin-top: 40px;
+}
+
+/* 발주 상품 목록 섹션 */
+.order-table {
+    margin-top: 30px; /* 상단 여백 */
+    font-size: 12px; /* 글씨 크기 줄이기 */
+    background-color: #FFFFFF;
+    width: 1450px;
+    padding: 15px; /* 내부 여백 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    margin-left: -12px;
+}
+
+.section-actions {
+    display: flex; /* 플렉스 컨테이너 설정 */
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 10px; /* 버튼 간 간격 */
+    margin-top: 15px; /* 상단 여백 */
+}
+
+/* Table Styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 12px; /* 테이블 글씨 크기 줄이기 */
+    background: #f3f3f3;
+}
+
+.item-table .table th:nth-child(1), .item-table .table td:nth-child(1) {
+    width: 10%; /* 상품ID */
+}
+
+.item-table .table th:nth-child(2), .item-table .table td:nth-child(2) {
+    width: 40%; /* 상품명 */
+}
+
+.item-table .table th:nth-child(3), .item-table .table td:nth-child(3) {
+    width: 15%; /* 대분류 */
+}
+
+.item-table .table th:nth-child(4), .item-table .table td:nth-child(4) {
+    width: 20%; /* 소분류 */
+}
+
+.item-table .table th:nth-child(5), .item-table .table td:nth-child(5) {
+    width: 15%; /* 가격 */
+}
+
+.table th, .table td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #333;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+    cursor: pointer;
+}
+
+.table-hover tbody tr.selected {
+    background-color: #f8d7da; /* 선택된 행 배경색 */
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagination button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #f4f4f4;
+}
+
+.pagination button.active {
+    background-color: #FFD028;
+    color: #0D183F;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Section Layout */
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+}
