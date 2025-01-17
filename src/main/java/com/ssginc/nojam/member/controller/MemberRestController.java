@@ -15,22 +15,7 @@ public class MemberRestController {
 
     private final MemberService memberService;
 
-    // 회원의 user_role을 업데이트하는 엔드포인트 (지점 회원 관리)
-    @PostMapping("update-role")
-    @ResponseBody
-    public void updateRole(@RequestParam String userId, @RequestParam String newRole, HttpSession session) {
-        String userRole = (String) session.getAttribute("userRole");
-//        if (!"HEAD".equals(userRole)) {
-//            return "unauthorized";
-//        }
 
-        boolean success = memberService.updateMemberRole(userId, newRole);
-//        if (success) {
-//            return "success";
-//        } else {
-//            return "fail";
-//        }
-    }
 
     /*
     @PostMapping("update-role")
