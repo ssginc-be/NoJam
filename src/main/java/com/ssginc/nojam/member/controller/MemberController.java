@@ -438,4 +438,13 @@ public class MemberController {
         return "member/manage-members"; // 새로 생성할 HTML 파일 경로
     }
 
+    // 회원의 user_role을 업데이트하는 엔드포인트 (지점 회원 관리)
+    @PostMapping("update-role")
+    public String updateRole(@RequestParam String userId, @RequestParam String newRole, HttpSession session) {
+        String userRole = (String) session.getAttribute("userRole");
+        boolean success = memberService.updateMemberRole(userId, newRole);
+
+        return "redirect:/member/manage-members";
+    }
+
 }
